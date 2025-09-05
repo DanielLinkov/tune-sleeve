@@ -9,7 +9,7 @@
     <link rel="icon" type="image/x-icon" href="/images/favicon.svg">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body data-bs-theme="dark">
     <div id="app">
     </div>
 </body>
