@@ -28,6 +28,7 @@ return new class extends Migration {
             $t->unsignedInteger('track_no')->nullable();
             $t->unsignedInteger('disk_no')->nullable();
             $t->unsignedInteger('duration')->nullable(); // seconds
+            $t->string('genre', 64)->nullable();
             $t->string('format', 16)->nullable(); // mp3/flac/ogg
             $t->unsignedInteger('bitrate')->nullable();
             $t->string('path')->unique(); // absolute path

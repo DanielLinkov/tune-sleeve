@@ -60,6 +60,8 @@ class ScanMusic extends Command
             $trackNo= isset($info['comments_html']['track_number'][0]) ? intval(preg_replace('/\/.*/','',$info['comments_html']['track_number'][0])) : null;
             $diskNo = isset($info['comments_html']['part_of_a_set'][0]) ? intval(preg_replace('/\/.*/','',$info['comments_html']['part_of_a_set'][0])) : null;
             $duration = isset($info['playtime_seconds']) ? intval(round($info['playtime_seconds'])) : null;
+            $genre  = $info['comments_html']['genre'][0]  ?? 'Unknown Genre';
+            $genre  = html_entity_decode($genre, ENT_QUOTES | ENT_HTML5);
             $format   = $info['fileformat'] ?? null;
             $bitrate  = isset($info['bitrate']) ? intval($info['bitrate']) : null;
             $filesize = filesize($path);
@@ -93,6 +95,7 @@ class ScanMusic extends Command
                     'track_no' => $trackNo,
                     'disk_no'  => $diskNo,
                     'duration' => $duration,
+                    'genre'    => $genre,
                     'format'   => $format,
                     'bitrate'  => $bitrate,
                     'filesize' => $filesize,
