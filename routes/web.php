@@ -14,7 +14,7 @@ Route::get('/', function () {
 
 Route::get('/stream/{track}', [StreamController::class, 'audio'])->name('stream.track');
 
-Route::get('/api/tracks', function(){
+Route::get('/api/music', function(){
     return [
         'status' => 'ok',
         'albums' => Album::all(),

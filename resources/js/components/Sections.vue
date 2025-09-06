@@ -16,7 +16,7 @@ const emit = defineEmits<{
     (e: 'section', section: Section): void;
 }>();
 
-import { Section } from '../defs';
+import { Section } from '../types';
 const onSection = (section: Section) => {
     emit('section', section);
 }
