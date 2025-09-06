@@ -1,4 +1,3 @@
-// src/domain/Player.ts
 import type { Track } from './types';
 
 export type PlayerSnapshot = {
@@ -35,7 +34,7 @@ export class Player {
   private load(i: number) {
     if (i < 0 || i >= this.state.queue.length) return;
     this.state.index = i;
-    this.audio.src = this.state.queue[i].stream_url;
+    this.audio.src = '/stream/' + this.state.queue[i].id;
     this.audio.load();
     this.emit();
   }
@@ -54,7 +53,7 @@ export class Player {
   prev() { const p = this.state.index - 1; if (p >= 0) { this.load(p); void this.play(); } }
 
   clear() { this.state.queue = []; this.state.index = -1; this.stop(); }
-  enqueue(items: Track | Track[]) { const a = Array.isArray(items) ? items : [items]; this.state.queue.push(...a); this.emit(); if (this.state.index === -1) { this.load(0); void this.play(); } }
+  enqueue(items: Track | Track[]) { const a = Array.isArray(items) ? items : [items]; this.state.queue.push(...a); this.emit();}
   removeAt(i: number) {
     if (i < 0 || i >= this.state.queue.length) return;
     const wasCurrent = i === this.state.index;

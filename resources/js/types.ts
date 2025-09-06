@@ -1,9 +1,3 @@
-export enum Section {
-    Genres = "genres",
-    Albums = "albums",
-    Artists = "artists",
-}
-
 export type Artist = { id: number; name: string };
 export type Album = {
     id: number;

@@ -6,7 +6,7 @@
         </div>
         <div class="card-body overflow-y-auto scrollbar-thin">
             <div class="album-grid">
-                <div class="album cursor-pointer" v-for="album in list" :key="album.id">
+                <div class="album cursor-pointer" @click="uiStore.selectAlbum(album.id)" v-for="album in list" :key="album.id">
                     <img v-if="album.cover_path" :src="libraryStore.coverUrl(album.id)" class="cover" :alt="album.title" />
                     <div v-else class="cover bg-primary d-flex align-items-center justify-content-center text-white">
                         <i class="bi bi-music-note-beamed" style="font-size: 4rem;"></i>
@@ -28,8 +28,10 @@
 <script setup lang="ts">
 import { Album } from "../../types";
 import { useLibraryStore } from "../../stores/library";
+import { useUiStore } from "../../stores/ui";
 
 const libraryStore = useLibraryStore();
+const uiStore = useUiStore();
 
 defineProps<{
     title: string;

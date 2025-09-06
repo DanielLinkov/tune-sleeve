@@ -2,7 +2,6 @@
 import { defineStore } from 'pinia';
 import type { Track } from '../types';
 import { Player } from '../Player';
-import { useHistoryStore } from './history';
 
 export const usePlayerStore = defineStore('player', {
   state: () => ({
@@ -32,14 +31,15 @@ export const usePlayerStore = defineStore('player', {
         this.currentTime = s.currentTime;
         this.duration = s.duration;
       });
-
-      // Track only queue + index in history to avoid noisy entries
-      useHistoryStore().register(this, { include: ['queue', 'index'], capacity: 50 });
     },
     destroy() { this._unsub?.(); this._player = null; },
 
     // Proxies
     play(i?: number)   { this._player?.play(i); },
+    playTrackId(id: number) {
+      const idx = this.queue.findIndex(t => t.id === id);
+      if (idx >= 0) this._player?.play(idx);
+    },
     pause()            { this._player?.pause(); },
     next()             { this._player?.next(); },
     prev()             { this._player?.prev(); },

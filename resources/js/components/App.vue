@@ -10,26 +10,26 @@
 import Header from './Header.vue';
 import Content from './Content.vue';
 import Splash from './Splash.vue';
-import { onMounted, provide, ref } from 'vue';
+import { onMounted, onUnmounted, provide, ref } from 'vue';
 import { useLibraryStore } from '../stores/library';
 import { usePlayerStore } from '../stores/player';
 import { useUiStore } from '../stores/ui';
-import { useHistoryStore } from '../stores/history';
 
 const isSplashVisible = ref(true);
 
 const lib = useLibraryStore();
 const player = usePlayerStore();
 const ui = useUiStore();
-const history = useHistoryStore();
 
 onMounted(async () => {
-    lib.registerHistory();
-    ui.registerHistory();
     player.init();
     await lib.load();
     setTimeout(() => {
         isSplashVisible.value = false;
     }, 1000); // Keep splash for at least 2 seconds
+});
+window.addEventListener('beforeunload', () => {
+    player.destroy();
+    console.debug('Player destroyed');
 });
 </script>

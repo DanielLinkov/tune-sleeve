@@ -2,7 +2,6 @@
 import { defineStore } from 'pinia';
 import { fetchLibrary } from '../services/api';
 import type { Artist, Album, Track, LibraryPayload } from '../types';
-import { useHistoryStore } from './history';
 import axios from 'axios';
 
 export const useLibraryStore = defineStore('library', {
@@ -20,8 +19,18 @@ export const useLibraryStore = defineStore('library', {
       Object.values(m).forEach(arr => arr.sort((x,y) => (x.year ?? 0) - (y.year ?? 0)));
       return m;
     },
-    tracksOfAlbum: (s) => (albumId: number) =>
-      s.tracks.filter(t => t.album_id === albumId).sort((a,b) => (a.track_no ?? 0) - (b.track_no ?? 0)),
+    albumsSortedByArtist: (s) => {
+      return [...s.albums].sort((a,b) => {
+        const artistA = s.artists.find(ar => ar.id === a.artist_id)?.name ?? '';
+        const artistB = s.artists.find(ar => ar.id === b.artist_id)?.name ?? '';
+        if (artistA === artistB) {
+          return (a.year ?? 0) - (b.year ?? 0);
+        }
+        return artistA.localeCompare(artistB);
+      });
+    },
+    tracksOfAlbum: (s) => (albumId: number | undefined) =>
+      albumId ? s.tracks.filter(t => t.album_id === albumId).sort((a,b) => (a.track_no ?? 0) - (b.track_no ?? 0)) : [],
     allGenres: (s) => s.genres.sort((a,b) => a.localeCompare(b)),
     artistOfAlbum: (s) => (albumId: number) => {
       const album = s.albums.find(a => a.id === albumId);
@@ -29,7 +38,9 @@ export const useLibraryStore = defineStore('library', {
     },
     coverUrl: (s) => (albumId: number) => {
         return `/cover/${albumId}`;
-    }
+    },
+    getAlbum: (s) => (albumId: number | null) => s.albums.find(a => a.id === albumId) ?? null,
+    getArtist: (s) => (artistId: number | null) => s.artists.find(a => a.id === artistId) ?? null,
   },
   actions: {
     async load() {
@@ -39,13 +50,6 @@ export const useLibraryStore = defineStore('library', {
       this.tracks  = lib.tracks;
       this.genres  = Array.from(new Set(this.tracks.map((track: { genre: string; }) => track.genre)));
       this.loaded  = true;
-    },
-    registerHistory() {
-      useHistoryStore().register(this, {
-        // Library usually doesn’t need undo/redo, but you can track filters later
-        include: ['artists', 'albums', 'tracks', 'loaded'],
-        capacity: 5,
-      });
     },
   },
 });
