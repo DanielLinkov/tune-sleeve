@@ -56,7 +56,7 @@ class ScanMusic extends Command
             $artist = html_entity_decode($artist, ENT_QUOTES | ENT_HTML5);
             $album  = $info['comments_html']['album'][0]  ?? 'Unknown Album';
             $album  = html_entity_decode($album, ENT_QUOTES | ENT_HTML5);
-            $year   = isset($info['comments_html']['year'][0]) ? intval($info['comments_html']['year'][0]) : null;
+            $year   = isset($info['comments_html']['date'][0]) ? intval(substr($info['comments_html']['date'][0],0,4)) : null;
             $trackNo= isset($info['comments_html']['track_number'][0]) ? intval(preg_replace('/\/.*/','',$info['comments_html']['track_number'][0])) : null;
             $diskNo = isset($info['comments_html']['part_of_a_set'][0]) ? intval(preg_replace('/\/.*/','',$info['comments_html']['part_of_a_set'][0])) : null;
             $duration = isset($info['playtime_seconds']) ? intval(round($info['playtime_seconds'])) : null;
@@ -94,6 +94,7 @@ class ScanMusic extends Command
                     'album_id' => $albumModel->id,
                     'track_no' => $trackNo,
                     'disk_no'  => $diskNo,
+                    'year'     => $year,
                     'duration' => $duration,
                     'genre'    => $genre,
                     'format'   => $format,

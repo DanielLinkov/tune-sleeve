@@ -27,6 +27,7 @@ return new class extends Migration {
             $t->foreignId('album_id')->nullable();
             $t->unsignedInteger('track_no')->nullable();
             $t->unsignedInteger('disk_no')->nullable();
+            $t->integer('year')->nullable();
             $t->unsignedInteger('duration')->nullable(); // seconds
             $t->string('genre', 64)->nullable();
             $t->string('format', 16)->nullable(); // mp3/flac/ogg
