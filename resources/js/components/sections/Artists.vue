@@ -1,6 +1,6 @@
 <template>
     <div class="card bg-warning-subtle max-w-80">
-        <div class="card-header">Artists <i class="bi bi-person-lines-fill"></i></div>
+        <div class="card-header"><i class="bi bi-person-lines-fill"></i> Artists</div>
         <div class="overflow-y-auto">
             <div class="list-group user-select-none">
                 <div class="list-group-item list-group-item-action truncate" :title="artist.name" v-for="artist in list" :key="artist.id" @click="fnSelectArtist(artist)">

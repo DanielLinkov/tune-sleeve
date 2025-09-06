@@ -52,6 +52,11 @@ return [
             'root'   => env('MUSIC_PATH'),
             'throw'  => false,
         ],
+        'covers' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/covers'),
+            'throw'  => false,
+        ],
 
         's3' => [
             'driver' => 's3',

@@ -1,6 +1,6 @@
 <template>
     <div class="card bg-warning-subtle w-xs">
-        <div class="card-header">Genres <i class="bi bi-music-note-list"></i></div>
+        <div class="card-header"><i class="bi bi-music-note-list"></i> Genres</div>
         <div class="list-group overflow-y-auto scrollbar-thin user-select-none">
             <div class="list-group-item list-group-item-action cursor-pointer" v-for="genre in genres" :key="genre" @click="fnSelectGenre(genre)">
                 {{ genre }}

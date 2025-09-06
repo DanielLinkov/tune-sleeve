@@ -1,12 +1,13 @@
 <template>
     <div class="card bg-info-subtle flex-grow-1">
         <div class="card-header">
+            <i class="bi bi-disc"></i>
             {{ title ?? "Albums" }} ({{ list.length }})
         </div>
         <div class="card-body overflow-y-auto scrollbar-thin">
             <div class="album-grid">
-                <div class="album" v-for="album in list" :key="album.id">
-                    <img v-if="album.cover_url" :src="'/covers/' + album.cover_url" class="cover" :alt="album.title" />
+                <div class="album cursor-pointer" v-for="album in list" :key="album.id">
+                    <img v-if="album.cover_path" :src="libraryStore.coverUrl(album.id)" class="cover" :alt="album.title" />
                     <div v-else class="cover bg-primary d-flex align-items-center justify-content-center text-white">
                         <i class="bi bi-music-note-beamed" style="font-size: 4rem;"></i>
                     </div>
@@ -50,8 +51,13 @@ defineProps<{
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 0.25rem;
+    transition: filter 0.5s, box-shadow 0.5s;
 }
 .album-grid .album {
     width: var(--col);
+}
+.album-grid .album:hover .cover {
+    filter: brightness(0.8);
+    box-shadow: 0 0 10px 3px var(--bs-info);
 }
 </style>

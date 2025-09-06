@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { fetchLibrary } from '../services/api';
 import type { Artist, Album, Track, LibraryPayload } from '../types';
 import { useHistoryStore } from './history';
+import axios from 'axios';
 
 export const useLibraryStore = defineStore('library', {
   state: () => ({
@@ -25,6 +26,9 @@ export const useLibraryStore = defineStore('library', {
     artistOfAlbum: (s) => (albumId: number) => {
       const album = s.albums.find(a => a.id === albumId);
       return album ? s.artists.find(ar => ar.id === album.artist_id) : undefined;
+    },
+    coverUrl: (s) => (albumId: number) => {
+        return `/cover/${albumId}`;
     }
   },
   actions: {

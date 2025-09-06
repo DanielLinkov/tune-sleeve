@@ -18,6 +18,7 @@ return new class extends Migration {
             $t->foreignId('artist_id')->nullable();
             $t->integer('year')->nullable();
             $t->string('cover_path')->nullable(); // cached JPEG/PNG in storage
+            $t->string('path'); // original path for uniqueness
         });
 
         Schema::create('tracks', function (Blueprint $t) {

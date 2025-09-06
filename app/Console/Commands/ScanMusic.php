@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -25,6 +26,7 @@ class ScanMusic extends Command
             Track::truncate();
             Album::truncate();
             Artist::truncate();
+            Storage::disk('covers')->delete(Storage::disk('covers')->allFiles());
             $this->info('Purged all existing entries.');
         }
 
@@ -43,7 +45,7 @@ class ScanMusic extends Command
 
             // Skip if already indexed and not forcing
             if (!$this->option('force') && Track::where('path', $rel)->exists()) {
-                $this->line("• Skipping (exists) ".basename($path));
+                $this->line("• Skipping (exists) " . basename($path));
                 continue;
             }
 
@@ -56,41 +58,35 @@ class ScanMusic extends Command
             $artist = html_entity_decode($artist, ENT_QUOTES | ENT_HTML5);
             $album  = $info['comments_html']['album'][0]  ?? 'Unknown Album';
             $album  = html_entity_decode($album, ENT_QUOTES | ENT_HTML5);
-            $year   = isset($info['comments_html']['date'][0]) ? intval(substr($info['comments_html']['date'][0],0,4)) : null;
-            $trackNo= isset($info['comments_html']['track_number'][0]) ? intval(preg_replace('/\/.*/','',$info['comments_html']['track_number'][0])) : null;
-            $diskNo = isset($info['comments_html']['part_of_a_set'][0]) ? intval(preg_replace('/\/.*/','',$info['comments_html']['part_of_a_set'][0])) : null;
+            $year   = isset($info['comments_html']['date'][0]) ? intval(substr($info['comments_html']['date'][0], 0, 4)) : null;
+            $trackNo = isset($info['comments_html']['track_number'][0]) ? intval(preg_replace('/\/.*/', '', $info['comments_html']['track_number'][0])) : null;
+            $diskNo = isset($info['comments_html']['part_of_a_set'][0]) ? intval(preg_replace('/\/.*/', '', $info['comments_html']['part_of_a_set'][0])) : null;
             $duration = isset($info['playtime_seconds']) ? intval(round($info['playtime_seconds'])) : null;
             $genre  = $info['comments_html']['genre'][0]  ?? 'Unknown Genre';
             $genre  = html_entity_decode($genre, ENT_QUOTES | ENT_HTML5);
             $format   = $info['fileformat'] ?? null;
             $bitrate  = isset($info['bitrate']) ? intval($info['bitrate']) : null;
             $filesize = filesize($path);
+            $album_path = dirname($rel);
 
             $artistModel = Artist::firstOrCreate(['name' => $artist]);
             $albumModel  = Album::firstOrCreate([
+                'path' => $album_path
+            ], [
                 'title' => $album,
                 'artist_id' => $artistModel->id,
-            ], ['year' => $year]);
-
-            // Optional: extract cover to storage/app/covers/{hash}.jpg
-            $coverPath = null;
-            if (!empty($info['comments']['picture'][0]['data'])) {
-                $img = $info['comments']['picture'][0];
-                $hash = substr(sha1($album.$artist), 0, 16);
-                $ext = Str::contains(($img['image_mime'] ?? ''), 'png') ? 'png' : 'jpg';
-                $coverPath = "covers/{$hash}.{$ext}";
-                Storage::disk('local')->put($coverPath, $img['data']);
-                if (!$albumModel->cover_path) {
-                    $albumModel->cover_path = $coverPath;
-                    $albumModel->save();
-                }
+                'year' => $year,
+            ]);
+            if(!$albumModel->cover_path) {
+                $albumModel->cover_path = $this->findAlbumCover($album_path,$albumModel->id);
+                $albumModel->save();
             }
 
             Track::updateOrCreate(
                 ['path' => $rel],
                 [
                     'title'    => $title,
-                    'artist_id'=> $artistModel->id,
+                    'artist_id' => $artistModel->id,
                     'album_id' => $albumModel->id,
                     'track_no' => $trackNo,
                     'disk_no'  => $diskNo,
@@ -108,5 +104,45 @@ class ScanMusic extends Command
 
         $this->info('Done.');
         return self::SUCCESS;
+    }
+    protected function findAlbumCover(string $albumPath,int $albumId): ?string
+    {
+        $possibleNames = ['cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'album.jpg', 'album.png', 'front.jpg', 'front.png', '*.jpg', '*.png'];
+        $fileList = [];
+        $cwd = getcwd();
+        if (is_dir($albumPath)) {
+            chdir($albumPath);
+            foreach ($possibleNames as $pattern) {
+                $fileList = array_merge($fileList, glob($pattern));
+            }
+            chdir($cwd);
+        }
+        // Remove duplicates
+        $fileList = array_unique($fileList);
+        if (empty($fileList)) {
+            return null;
+        }
+        // Prioritize specific names
+        usort($fileList, function ($a, $b) use ($possibleNames) {
+            $aName = strtolower($a);
+            $bName = strtolower($b);
+            $aIndex = array_search($aName, $possibleNames);
+            $bIndex = array_search($bName, $possibleNames);
+            $aIndex = $aIndex === false ? count($possibleNames) : $aIndex;
+            $bIndex = $bIndex === false ? count($possibleNames) : $bIndex;
+            return $aIndex <=> $bIndex;
+        });
+        foreach ($fileList as $name) {
+            $fullPath = $albumPath . DIRECTORY_SEPARATOR . $name;
+            if (file_exists($fullPath) && is_file($fullPath) && filesize($fullPath) > 1000) {
+                // Store in covers directory
+                $ext = pathinfo($fullPath, PATHINFO_EXTENSION);
+                $hash = substr(sha1($albumId . $fullPath), 0, 16);
+                $coverPath = "{$hash}.{$ext}";
+                Storage::disk('covers')->put($coverPath, file_get_contents($fullPath));
+                return $coverPath;
+            }
+        }
+        return null;
     }
 }

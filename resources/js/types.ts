@@ -10,7 +10,7 @@ export type Album = {
     title: string;
     artist_id: number;
     year?: number;
-    cover_url?: string;
+    cover_path?: string;
 };
 export type Track = {
     id: number;
