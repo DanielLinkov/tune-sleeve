@@ -22,6 +22,10 @@ export const useLibraryStore = defineStore('library', {
     tracksOfAlbum: (s) => (albumId: number) =>
       s.tracks.filter(t => t.album_id === albumId).sort((a,b) => (a.track_no ?? 0) - (b.track_no ?? 0)),
     allGenres: (s) => s.genres.sort((a,b) => a.localeCompare(b)),
+    artistOfAlbum: (s) => (albumId: number) => {
+      const album = s.albums.find(a => a.id === albumId);
+      return album ? s.artists.find(ar => ar.id === album.artist_id) : undefined;
+    }
   },
   actions: {
     async load() {

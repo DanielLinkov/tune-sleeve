@@ -1,22 +1,30 @@
 <template>
-    <div class="card bg-info-subtle max-w-80">
-        <div class="card-header">Artists</div>
-        <div class="card-body overflow-y-auto">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-                    All
-                </a>
-                <a href="#" class="list-group-item list-group-item-action" v-for="artist in artists" :key="artist.id">
+    <div class="card bg-warning-subtle max-w-80">
+        <div class="card-header">Artists <i class="bi bi-person-lines-fill"></i></div>
+        <div class="overflow-y-auto">
+            <div class="list-group user-select-none">
+                <div class="list-group-item list-group-item-action truncate" :title="artist.name" v-for="artist in list" :key="artist.id" @click="fnSelectArtist(artist)">
                     {{ artist.name }}
-                </a>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue';
 
-const artists = inject('artists');
+defineProps<{
+    list: Array<{ id: number, name: string }>,
+}>();
 
+const emit = defineEmits(['select:artist']);
+const fnSelectArtist = (artist: { id: number, name: string } | null) => {
+    emit('select:artist', artist);
+};
 </script>
+
+<style scoped>
+.list-group-item {
+    cursor: pointer;
+}
+</style>

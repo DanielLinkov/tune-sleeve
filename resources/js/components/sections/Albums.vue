@@ -1,13 +1,22 @@
 <template>
-    <div class="card bg-info-subtle">
-        <div class="card-header">{{ title ?? 'Albums' }}</div>
-        <div class="card-body">
-            <div class="d-grid gap-3" :style="{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }">
-                <div class="card bg-light" v-for="album in list" :key="album.id">
-                    <img :src="album.cover ? '/covers/' + album.cover : '/img/placeholder.png'" class="card-img-top" :alt="album.title">
-                    <div class="card-body p-2">
-                        <h6 class="card-title text-truncate" :title="album.title">{{ album.title }}</h6>
-                        <p class="card-text text-truncate" :title="album.artist_name">{{ album.artist_name }}</p>
+    <div class="card bg-info-subtle flex-grow-1">
+        <div class="card-header">
+            {{ title ?? "Albums" }} ({{ list.length }})
+        </div>
+        <div class="card-body overflow-y-auto scrollbar-thin">
+            <div class="album-grid">
+                <div class="album" v-for="album in list" :key="album.id">
+                    <img v-if="album.cover_url" :src="'/covers/' + album.cover_url" class="cover" :alt="album.title" />
+                    <div v-else class="cover bg-primary d-flex align-items-center justify-content-center text-white">
+                        <i class="bi bi-music-note-beamed" style="font-size: 4rem;"></i>
+                    </div>
+                    <div class="card-body p-1 text-center" data-bs-toggle="tooltip" :title="`<div class='text-base fw-bold'>${album.title}</div><div class='text-sm text-muted'>${libraryStore.artistOfAlbum(album.id)?.name || 'Unknown Artist'}</div>`">
+                        <h6 class="text-title truncate">
+                            {{ album.title }}
+                        </h6>
+                        <p class="card-text truncate">
+                            {{ libraryStore.artistOfAlbum(album.id)?.name }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -16,10 +25,33 @@
 </template>
 
 <script setup lang="ts">
-import { Album } from '../../types';
+import { Album } from "../../types";
+import { useLibraryStore } from "../../stores/library";
+
+const libraryStore = useLibraryStore();
 
 defineProps<{
-    title: string,
-    list: Array<Album>,
+    title: string;
+    list: Array<Album>;
 }>();
 </script>
+
+<style scoped>
+.album-grid {
+    --col: 200px;
+    --gap: 32px; /* minimum gap */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, var(--col)));
+    gap: var(--gap);
+    justify-content: space-between; /* spreads extra space between columns */
+}
+.album-grid .cover {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+.album-grid .album {
+    width: var(--col);
+}
+</style>

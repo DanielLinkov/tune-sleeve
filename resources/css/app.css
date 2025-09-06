@@ -1,9 +1,5 @@
 @import 'tailwindcss';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
-@plugin "daisyui" {
-    themes: dark --default;
-}
-
 
 .scrollbar-thin {
     scrollbar-width: thin;

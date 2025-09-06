@@ -30,6 +30,6 @@ onMounted(async () => {
     await lib.load();
     setTimeout(() => {
         isSplashVisible.value = false;
-    }, 2000); // Keep splash for at least 2 seconds
+    }, 1000); // Keep splash for at least 2 seconds
 });
 </script>
