@@ -58,7 +58,7 @@ const activateTrack = (trackId: number) => {
 
 <style scoped>
 .cover {
-    width: 160px;
+    width: 120px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 0.25rem;

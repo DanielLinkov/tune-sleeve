@@ -1,7 +1,7 @@
 // src/stores/ui.ts
 import { defineStore } from 'pinia';
 
-export type Page = 'artists' | 'artist' | 'albums' | 'album' | 'queue' | 'genres';
+export type Page = 'artists' | 'artist' | 'albums' | 'album' | 'queue' | 'genres' | 'playlists' | 'playlist';
 
 export const useUiStore = defineStore('ui', {
   state: () => ({
