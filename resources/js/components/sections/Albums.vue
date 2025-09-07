@@ -6,8 +6,8 @@
         </div>
         <div class="card-body overflow-y-auto scrollbar-thin">
             <div class="album-grid">
-                <div class="album cursor-pointer" @click="uiStore.selectAlbum(album.id)" v-for="album in list" :key="album.id">
-                    <img v-if="album.cover_path" :src="libraryStore.coverUrl(album.id)" class="cover" :alt="album.title" />
+                <div class="album cursor-pointer user-select-none" @click="uiStore.selectAlbum(album.id)" v-for="album in list" :key="album.id">
+                    <img v-if="album.cover_path" :src="libraryStore.coverUrl(album.id)" class="cover" :alt="album.title" draggable="false" />
                     <div v-else class="cover bg-primary d-flex align-items-center justify-content-center text-white">
                         <i class="bi bi-music-note-beamed" style="font-size: 4rem;"></i>
                     </div>

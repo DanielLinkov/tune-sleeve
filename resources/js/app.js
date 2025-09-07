@@ -11,7 +11,13 @@ app.mount('#app');
 
 const tooltip = new bootstrap.Tooltip(document.body, {
     selector: '[data-bs-toggle="tooltip"]',
-    trigger: 'hover',
+    container: 'body',
+    trigger: 'hover focus',
     placement: 'top',
     html: true,
+});
+document.body.addEventListener('click', (e) => {
+    document.body.querySelectorAll('.tooltip.show').forEach((el) => {
+        el.remove();
+    });
 });

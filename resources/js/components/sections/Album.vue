@@ -6,6 +6,7 @@
                 :src="libraryStore.coverUrl(album.id)"
                 class="cover"
                 :alt="album.title"
+                draggable="false"
             />
             <div
                 v-else
