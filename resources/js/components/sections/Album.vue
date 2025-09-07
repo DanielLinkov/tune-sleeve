@@ -25,17 +25,8 @@
                 </div>
             </div>
         </header>
-        <div class="song-list overflow-y-auto">
-            <ul class="list-group list-group-flush user-select-none">
-                <li
-                    v-for="track in tracks"
-                    :key="track.id"
-                    class="list-group-item list-group-item-action"
-                    @click="activateTrack(track.id)"
-                >
-                    {{ track.title }}
-                </li>
-            </ul>
+        <div class="overflow-y-auto">
+            <TrackList :tracks="tracks" @activateTrack="activateTrack" />
         </div>
     </div>
 </template>
@@ -45,6 +36,7 @@ import { Album } from "../../types";
 import { useLibraryStore } from "../../stores/library";
 import { usePlayerStore } from "../../stores/player";
 import { computed } from "vue";
+import TrackList from "../TrackList.vue";
 
 const libraryStore = useLibraryStore();
 const playerStore = usePlayerStore();
