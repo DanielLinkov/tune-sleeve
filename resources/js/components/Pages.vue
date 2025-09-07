@@ -15,12 +15,18 @@
 
 <script setup lang="ts">
 import { Page } from '../stores/ui';
-const emit = defineEmits<{
-    (e: 'page', page: Page): void;
-}>();
+import { useUiStore } from '../stores/ui';
+
+const uiStore = useUiStore();
 
 const onSelectPage = (page: Page) => {
-    emit('page', page);
+    uiStore.setPage(page);
+    if(page !== 'genre') {
+        uiStore.selectGenre('');
+    }
+    if(page !== 'artist') {
+        uiStore.selectArtist(null);
+    }
 }
 </script>
 

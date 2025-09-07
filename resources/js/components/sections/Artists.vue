@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-warning-subtle max-w-80">
+    <div class="card bg-warning-subtle w-80">
         <div class="card-header">
             <i class="bi bi-person-lines-fill"></i> Artists
         </div>
@@ -11,7 +11,7 @@
                     :title="artist.name"
                     v-for="artist in list"
                     :key="artist.id"
-                    @click="uiStore.selectArtist(artist.id)"
+                    @click="uiStore.selectArtist(artist.id); uiStore.setPage('artist')"
                 >
                     {{ artist.name }}
                 </div>

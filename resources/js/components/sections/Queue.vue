@@ -1,5 +1,9 @@
 <template>
-    <TrackList :tracks="playerStore.queue" @activateTrack="onActivateTrack"></TrackList>
+    <TrackList v-if="playerStore.queue.length" :tracks="playerStore.queue" @activateTrack="onActivateTrack"></TrackList>
+    <div v-else class="d-flex align-items-center justify-content-center h-100 text-muted w-100">
+        <i class="bi bi-music-note-beamed" style="font-size: 4rem"></i>
+        <span class="ms-3">No items to show</span>
+    </div>
 </template>
 
 <script setup lang="ts">

@@ -8,7 +8,7 @@
             <div class="album-grid">
                 <div
                     class="album cursor-pointer user-select-none"
-                    @click="uiStore.selectAlbum(album.id)"
+                    @click="uiStore.selectAlbum(album.id); uiStore.setPage('album')"
                     v-for="album in list"
                     :key="album.id"
                 >

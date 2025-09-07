@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center">
         <div class="btn-group">
-            <button class="btn btn-primary" :disabled="!canBack" @click="back()">
+            <button class="btn btn-primary" :disabled="playerStore.queue.length === 0" @click="back()">
                 <i v-if="playerStore.canPrev && playerStore.currentTime < 5" class="bi bi-skip-backward-fill"></i>
                 <i v-else class="bi bi-rewind-fill"></i>
             </button>
@@ -17,7 +17,7 @@
         </div>
         <img v-if="album && album.cover_path" :src="libraryStore.coverUrl(album.id)" @click="uiStore.selectAlbum(album.id)" class="w-12 h-12 rounded ms-4 cursor-pointer cover" />
         <div v-else class="w-12 h-12 rounded dark:bg-gray-600 ms-4 flex items-center justify-center cursor-pointer" @click="uiStore.selectAlbum(album?.id)"><i class="bi bi-music-note-beamed fs-5"></i></div>
-        <div class="flex flex-col ms-3 title cursor-default" :data-bs-original-title="track ? `<b>${track.title}</b>${artist ? ' - ' + artist.name : ''}<hr/>${album ? album.title : ''}` : ''" data-bs-toggle="tooltip" data-bs-placement="bottom">
+        <div class="flex flex-col ms-3 title cursor-default" :data-bs-original-title="track ? `<b>${track.title}</b>${artist ? ' - ' + artist.name : ''}<hr class='my-2'/>${album ? album.title : ''}` : ''" data-bs-toggle="tooltip" data-bs-placement="bottom">
             <span class="font-bold truncate" v-if="track">{{ track.title }}</span>
             <span class="text-sm truncate cursor-pointer" @click="uiStore.selectArtist(artist.id)" v-if="artist">{{ artist.name }}</span>
         </div>
@@ -41,9 +41,8 @@ const playerStore = usePlayerStore();
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();
 
-const canBack = computed(() => playerStore.currentTime > 5 || playerStore.canPrev);
 function back() {
-    if(playerStore.currentTime > 5) {
+    if(playerStore.currentTime > 3 || !playerStore.canPrev) {
         playerStore.seek(0);
         return;
     }

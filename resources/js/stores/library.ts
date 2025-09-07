@@ -2,7 +2,6 @@
 import { defineStore } from 'pinia';
 import { fetchLibrary } from '../services/api';
 import type { Artist, Album, Track, LibraryPayload } from '../types';
-import axios from 'axios';
 
 export const useLibraryStore = defineStore('library', {
   state: () => ({
@@ -46,6 +45,14 @@ export const useLibraryStore = defineStore('library', {
     artistOfAlbum: (s) => (albumId: number) => {
       const album = s.albums.find(a => a.id === albumId);
       return album ? s.artists.find(ar => ar.id === album.artist_id) : undefined;
+    },
+    artistsOfGenre: (s) => (genre: string | null) => {
+      if (!genre) return [];
+      const artistIds = new Set(s.tracks.filter(t => t.genre === genre).map(t => {
+        const album = s.albums.find(a => a.id === t.album_id);
+        return album ? album.artist_id : null;
+      }).filter((id): id is number => id !== null));
+      return s.artists.filter(ar => artistIds.has(ar.id)).sort((a,b) => a.name.localeCompare(b.name));
     },
     coverUrl: (s) => (albumId: number) => {
         return `/cover/${albumId}`;
