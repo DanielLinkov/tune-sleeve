@@ -15,11 +15,11 @@
                 <i class="bi bi-skip-forward-fill"></i>
             </button>
         </div>
-        <img v-if="album && album.cover_path" :src="libraryStore.coverUrl(album.id)" class="w-12 h-12 rounded ms-4" />
-        <div v-else class="w-12 h-12 rounded dark:bg-gray-600 ms-4 flex items-center justify-center"><i class="bi bi-music-note-beamed fs-5"></i></div>
+        <img v-if="album && album.cover_path" :src="libraryStore.coverUrl(album.id)" @click="uiStore.selectAlbum(album.id)" class="w-12 h-12 rounded ms-4 cursor-pointer cover" />
+        <div v-else class="w-12 h-12 rounded dark:bg-gray-600 ms-4 flex items-center justify-center cursor-pointer" @click="uiStore.selectAlbum(album?.id)"><i class="bi bi-music-note-beamed fs-5"></i></div>
         <div class="flex flex-col ms-3 title cursor-default" :data-bs-original-title="track ? `<b>${track.title}</b>${artist ? ' - ' + artist.name : ''}<hr/>${album ? album.title : ''}` : ''" data-bs-toggle="tooltip" data-bs-placement="bottom">
             <span class="font-bold truncate" v-if="track">{{ track.title }}</span>
-            <span class="text-sm truncate" v-if="artist">{{ artist.name }}</span>
+            <span class="text-sm truncate cursor-pointer" @click="uiStore.selectArtist(artist.id)" v-if="artist">{{ artist.name }}</span>
         </div>
         <div class="seek-bar flex-grow ms-4">
             <input type="range" class="form-range w-full" min="0" :max="playerStore.duration" step="1" :value="playerStore.currentTime" @input="playerStore.seek($event.target?.value)" />
@@ -35,9 +35,11 @@
 import { computed } from 'vue';
 import { useLibraryStore } from '../stores/library';
 import { usePlayerStore } from '../stores/player';
+import { useUiStore } from '../stores/ui';
 
 const playerStore = usePlayerStore();
 const libraryStore = useLibraryStore();
+const uiStore = useUiStore();
 
 const canBack = computed(() => playerStore.currentTime > 5 || playerStore.canPrev);
 function back() {
@@ -53,10 +55,26 @@ const artist = computed(() => playerStore.nowPlaying?.artist_id ? libraryStore.g
 </script>
 
 <style scoped>
+.cover{
+    object-fit: cover;
+}
 .title {
-    width: 200px;
+    width: 260px;
 }
 .seek-bar{
-    width: 200px;
+    width: 180px;
+}
+@media screen and (max-width: 768px) {
+    .title {
+        width: 150px;
+    }
+    .seek-bar{
+        width: 100px;
+    }
+}
+@media screen and (max-width: 576px) {
+    .seek-bar{
+        display:none;
+    }
 }
 </style>

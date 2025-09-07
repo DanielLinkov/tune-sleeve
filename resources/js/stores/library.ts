@@ -19,6 +19,17 @@ export const useLibraryStore = defineStore('library', {
       Object.values(m).forEach(arr => arr.sort((x,y) => (x.year ?? 0) - (y.year ?? 0)));
       return m;
     },
+    albumsOfArtist: (s) => (artistId: number | null | undefined) =>
+      artistId ? s.albums.filter(a => a.artist_id === artistId).sort((x,y) => (x.year ?? 0) - (y.year ?? 0)) : [],
+    albumsOfGenre: (s) => (genre: string | null) =>
+      genre ? s.albums.filter(a => s.tracks.some(t => t.album_id === a.id && t.genre === genre)).sort((a,b) => {
+        const artistA = s.artists.find(ar => ar.id === a.artist_id)?.name ?? '';
+        const artistB = s.artists.find(ar => ar.id === b.artist_id)?.name ?? '';
+        if (artistA === artistB) {
+          return (a.year ?? 0) - (b.year ?? 0);
+        }
+        return artistA.localeCompare(artistB);
+      }) : [],
     albumsSortedByArtist: (s) => {
       return [...s.albums].sort((a,b) => {
         const artistA = s.artists.find(ar => ar.id === a.artist_id)?.name ?? '';

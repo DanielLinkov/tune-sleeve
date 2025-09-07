@@ -1,9 +1,18 @@
 <template>
     <div class="card bg-warning-subtle max-w-80">
-        <div class="card-header"><i class="bi bi-person-lines-fill"></i> Artists</div>
+        <div class="card-header">
+            <i class="bi bi-person-lines-fill"></i> Artists
+        </div>
         <div class="overflow-y-auto">
             <div class="list-group user-select-none">
-                <div class="list-group-item list-group-item-action truncate" :title="artist.name" v-for="artist in list" :key="artist.id" @click="fnSelectArtist(artist)">
+                <div
+                    class="list-group-item list-group-item-action cursor-pointer truncate"
+                    :class="{ active: artist.id === uiStore.selectedArtistId }"
+                    :title="artist.name"
+                    v-for="artist in list"
+                    :key="artist.id"
+                    @click="uiStore.selectArtist(artist.id)"
+                >
                     {{ artist.name }}
                 </div>
             </div>
@@ -12,19 +21,11 @@
 </template>
 
 <script setup lang="ts">
+import { useUiStore } from "../../stores/ui";
+
+const uiStore = useUiStore();
 
 defineProps<{
-    list: Array<{ id: number, name: string }>,
+    list: Array<{ id: number; name: string }>;
 }>();
-
-const emit = defineEmits(['select:artist']);
-const fnSelectArtist = (artist: { id: number, name: string } | null) => {
-    emit('select:artist', artist);
-};
 </script>
-
-<style scoped>
-.list-group-item {
-    cursor: pointer;
-}
-</style>
