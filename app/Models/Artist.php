@@ -9,7 +9,7 @@ use App\Models\Track;
 
 class Artist extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name','musicbrainz_artistid'];
     public $timestamps = false;
     public function albums(){ return $this->hasMany(Album::class); }
     public function tracks(){ return $this->hasMany(Track::class); }

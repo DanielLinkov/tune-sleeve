@@ -3,7 +3,7 @@
         <header class="d-flex align-items-center p-3 bg-info-subtle text-white">
             <img
                 v-if="album?.cover_path"
-                :src="libraryStore.coverUrl(album.id)"
+                :src="libraryStore.coverUrl(album)"
                 class="cover"
                 :alt="album.title"
                 draggable="false"

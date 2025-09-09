@@ -1,6 +1,7 @@
 export type Artist = { id: number; name: string };
 export type Album = {
     id: number;
+    musicbrainz_albumid?: string;
     title: string;
     artist_id: number;
     year?: number;
@@ -12,6 +13,7 @@ export type Track = {
     artist_id: number;
     genre: string;
     album_id: number;
+    disk_no?: number;
     track_no?: number;
     duration?: number;
 };

@@ -40,7 +40,12 @@ export const useLibraryStore = defineStore('library', {
       });
     },
     tracksOfAlbum: (s) => (albumId: number | undefined) =>
-      albumId ? s.tracks.filter(t => t.album_id === albumId).sort((a,b) => (a.track_no ?? 0) - (b.track_no ?? 0)) : [],
+      albumId ? s.tracks.filter(t => t.album_id === albumId).sort((a,b) => {
+        if(a.disk_no !== b.disk_no) {
+          return (a.disk_no ?? 0) - (b.disk_no ?? 0);
+        }
+        return (a.track_no ?? 0) - (b.track_no ?? 0);
+      }) : [],
     allGenres: (s) => s.genres.sort((a,b) => a.localeCompare(b)),
     artistOfAlbum: (s) => (albumId: number) => {
       const album = s.albums.find(a => a.id === albumId);
@@ -54,8 +59,9 @@ export const useLibraryStore = defineStore('library', {
       }).filter((id): id is number => id !== null));
       return s.artists.filter(ar => artistIds.has(ar.id)).sort((a,b) => a.name.localeCompare(b.name));
     },
-    coverUrl: (s) => (albumId: number) => {
-        return `/cover/${albumId}`;
+    coverUrl: (s) => (album: Album) => {
+        const hash = btoa(album.cover_path ?? '');
+        return `/cover/${album.id}?seed=${hash}`;
     },
     getAlbum: (s) => (albumId: number | null) => s.albums.find(a => a.id === albumId) ?? null,
     getArtist: (s) => (artistId: number | null) => s.artists.find(a => a.id === artistId) ?? null,

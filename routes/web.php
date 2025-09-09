@@ -17,7 +17,7 @@ Route::get('/stream/{track}', [StreamController::class, 'audio'])->name('stream.
 Route::get('/api/music', function(){
     return [
         'status' => 'ok',
-        'albums' => Album::all(['id', 'title', 'artist_id', 'year', 'cover_path']),
+        'albums' => Album::all(['id', 'title', 'artist_id', 'year', 'cover_path','musicbrainz_albumid']),
         'artists' => Artist::all(['id', 'name']),
         'tracks' => Track::all(['id', 'title', 'album_id', 'artist_id', 'duration','disk_no', 'track_no','genre','year']),
     ];

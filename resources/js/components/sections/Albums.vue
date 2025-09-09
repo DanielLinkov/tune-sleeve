@@ -9,12 +9,12 @@
                 <div
                     class="album cursor-pointer user-select-none"
                     @click="uiStore.selectAlbum(album.id); uiStore.setPage('album')"
-                    v-for="album in list"
+                    v-for="album in list as Album[]"
                     :key="album.id"
                 >
                     <img
                         v-if="album.cover_path"
-                        :src="libraryStore.coverUrl(album.id)"
+                        :src="libraryStore.coverUrl(album)"
                         class="cover"
                         :alt="album.title"
                         draggable="false"
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import { useLibraryStore } from "../../stores/library";
 import { useUiStore } from "../../stores/ui";
+import { Album } from "../../types";
 
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();

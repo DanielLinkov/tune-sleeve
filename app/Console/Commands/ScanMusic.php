@@ -61,6 +61,9 @@ class ScanMusic extends Command
             $year   = isset($info['comments_html']['date'][0]) ? intval(substr($info['comments_html']['date'][0], 0, 4)) : null;
             $trackNo = isset($info['comments_html']['track_number'][0]) ? intval(preg_replace('/\/.*/', '', $info['comments_html']['track_number'][0])) : null;
             $diskNo = isset($info['comments_html']['part_of_a_set'][0]) ? intval(preg_replace('/\/.*/', '', $info['comments_html']['part_of_a_set'][0])) : null;
+            if ($diskNo === NULL && isset($info['comments_html']['discnumber'][0])) {
+                $diskNo = intval(preg_replace('/\/.*/', '', $info['comments_html']['discnumber'][0]));
+            }
             $duration = isset($info['playtime_seconds']) ? intval(round($info['playtime_seconds'])) : null;
             $genre  = $info['comments_html']['genre'][0]  ?? 'Unknown Genre';
             $genre  = html_entity_decode($genre, ENT_QUOTES | ENT_HTML5);
@@ -68,23 +71,48 @@ class ScanMusic extends Command
             $bitrate  = isset($info['bitrate']) ? intval($info['bitrate']) : null;
             $filesize = filesize($path);
             $album_path = dirname($rel);
+            $musicbrainz_trackid = $info['comments_html']['musicbrainz_trackid'][0] ?? null;
+            $musicbrainz_artistid = $info['comments_html']['musicbrainz_artistid'][0] ?? null;
+            $musicbrainz_albumid = $info['comments_html']['musicbrainz_albumid'][0] ?? null;
+            if(!$musicbrainz_albumid && isset($info['comments_html']['text']['MusicBrainz Album Id'])) {
+                $musicbrainz_albumid = $info['comments_html']['text']['MusicBrainz Album Id'];
+            }
 
-            $artistModel = Artist::firstOrCreate(['name' => $artist]);
-            $albumModel  = Album::firstOrCreate([
-                'path' => $album_path
-            ], [
-                'title' => $album,
-                'artist_id' => $artistModel->id,
-                'year' => $year,
-            ]);
-            if(!$albumModel->cover_path) {
-                $albumModel->cover_path = $this->findAlbumCover($album_path,$albumModel->id);
+            $artistModel = null;
+            $albumModel = null;
+            if ($musicbrainz_artistid !== NULL)
+                $artistModel = Artist::firstOrCreate(
+                    ['musicbrainz_artistid' => $musicbrainz_artistid],
+                    ['name' => $artist],
+                );
+            if (!$artistModel || !$artistModel->exists)
+                $artistModel = Artist::firstOrCreate(['name' => $artist],[
+                    'musicbrainz_artistid' => $musicbrainz_artistid
+                ]);
+
+            if ($musicbrainz_albumid !== NULL)
+                $albumModel = Album::firstOrCreate(
+                    ['musicbrainz_albumid' => $musicbrainz_albumid],
+                    ['title' => $album, 'artist_id' => $artistModel->id, 'year' => $year, 'path' => $album_path],
+                );
+            if (!$albumModel || !$albumModel->exists)
+                $albumModel  = Album::firstOrCreate([
+                    'path' => $album_path
+                ], [
+                    'title' => $album,
+                    'artist_id' => $artistModel->id,
+                    'musicbrainz_albumid' => $musicbrainz_albumid,
+                    'year' => $year,
+                ]);
+            if (!$albumModel->cover_path) {
+                $albumModel->cover_path = $this->findAlbumCover($album_path, $albumModel->id);
                 $albumModel->save();
             }
 
             Track::updateOrCreate(
                 ['path' => $rel],
                 [
+                    'musicbrainz_trackid' => $musicbrainz_trackid,
                     'title'    => $title,
                     'artist_id' => $artistModel->id,
                     'album_id' => $albumModel->id,
@@ -105,7 +133,7 @@ class ScanMusic extends Command
         $this->info('Done.');
         return self::SUCCESS;
     }
-    protected function findAlbumCover(string $albumPath,int $albumId): ?string
+    protected function findAlbumCover(string $albumPath, int $albumId): ?string
     {
         $possibleNames = ['cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'album.jpg', 'album.png', 'front.jpg', 'front.png', '*.jpg', '*.png'];
         $fileList = [];

@@ -9,20 +9,23 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('artists', function (Blueprint $t) {
             $t->id();
+            $t->string('musicbrainz_artistid')->collation('latin1_bin')->nullable()->unique();
             $t->string('name')->index();
         });
 
         Schema::create('albums', function (Blueprint $t) {
             $t->id();
+            $t->string('musicbrainz_albumid')->collation('latin1_bin')->nullable()->unique();
             $t->string('title')->index();
             $t->foreignId('artist_id')->nullable();
             $t->integer('year')->nullable();
             $t->string('cover_path')->nullable(); // cached JPEG/PNG in storage
-            $t->string('path'); // original path for uniqueness
+            $t->string('path')->index(); // original path for uniqueness
         });
 
         Schema::create('tracks', function (Blueprint $t) {
             $t->id();
+            $t->string('musicbrainz_trackid')->collation('latin1_bin')->nullable();
             $t->string('title')->index();
             $t->foreignId('artist_id')->nullable();
             $t->foreignId('album_id')->nullable();
