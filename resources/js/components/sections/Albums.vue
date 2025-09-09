@@ -5,10 +5,16 @@
             {{ title }} ({{ list.length }})
         </div>
         <div class="card-body overflow-y-auto scrollbar-thin">
+            <div v-if="list.length === 0" class="text-center text-muted my-4">
+                No albums found.
+            </div>
             <div class="album-grid">
                 <div
                     class="album cursor-pointer user-select-none"
-                    @click="uiStore.selectAlbum(album.id); uiStore.setPage('album')"
+                    @click="
+                        uiStore.selectAlbum(album.id);
+                        uiStore.setPage('album');
+                    "
                     v-for="album in list as Album[]"
                     :key="album.id"
                 >
@@ -47,6 +53,55 @@
                     </div>
                 </div>
             </div>
+            <template v-if="listAppearsInVarious && listAppearsInVarious.length > 0">
+                <hr v-if="list.length > 0" />
+                <h4>Appears On</h4>
+                <div class="album-grid">
+                    <div
+                        class="album cursor-pointer user-select-none"
+                        @click="
+                            uiStore.selectAlbum(album.id);
+                            uiStore.setPage('album');
+                        "
+                        v-for="album in listAppearsInVarious as Album[]"
+                        :key="album.id"
+                    >
+                        <img
+                            v-if="album.cover_path"
+                            :src="libraryStore.coverUrl(album)"
+                            class="cover"
+                            :alt="album.title"
+                            draggable="false"
+                        />
+                        <div
+                            v-else
+                            class="cover bg-primary d-flex align-items-center justify-content-center text-white"
+                        >
+                            <i
+                                class="bi bi-music-note-beamed"
+                                style="font-size: 4rem"
+                            ></i>
+                        </div>
+                        <div
+                            class="card-body p-1 text-center"
+                            data-bs-toggle="tooltip"
+                            :title="`<div class='text-base fw-bold'>${
+                                album.title
+                            }</div><div class='text-sm text-muted'>${
+                                libraryStore.artistOfAlbum(album.id)?.name ||
+                                'Unknown Artist'
+                            }</div>`"
+                        >
+                            <h6 class="text-title truncate">
+                                {{ album.title }}
+                            </h6>
+                            <p class="card-text truncate">
+                                {{ libraryStore.artistOfAlbum(album.id)?.name }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 </template>
@@ -55,6 +110,7 @@
 import { useLibraryStore } from "../../stores/library";
 import { useUiStore } from "../../stores/ui";
 import { Album } from "../../types";
+import { computed } from "vue";
 
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();
@@ -62,19 +118,28 @@ const uiStore = useUiStore();
 const props = defineProps({
     title: {
         type: String,
-        default: 'Albums',
-        required: false
+        default: "Albums",
+        required: false,
     },
     list: {
         type: Array,
-        required: true
-    }
+        required: true,
+    },
+    listAppearsIn: {
+        type: Array,
+        required: false,
+        default: () => [],
+    },
+});
+
+const listAppearsInVarious = computed(() => {
+    return props.listAppearsIn.filter(album => props.list.map(a => a.id).includes(album.id) === false);
 });
 </script>
 
 <style scoped>
 .album-grid {
-    --col: 140px;
+    --col: 160px;
     --gap: 32px; /* minimum gap */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, var(--col)));

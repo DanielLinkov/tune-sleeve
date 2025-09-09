@@ -15,11 +15,11 @@
                 <i class="bi bi-skip-forward-fill"></i>
             </button>
         </div>
-        <img v-if="album && album.cover_path" :src="libraryStore.coverUrl(album)" @click="uiStore.selectAlbum(album.id)" class="w-12 h-12 rounded ms-4 cursor-pointer cover" />
+        <img v-if="album && album.cover_path" :src="libraryStore.coverUrl(album)" @click="uiStore.selectAlbum(album.id); uiStore.setPage('album')" class="w-12 h-12 rounded ms-4 cursor-pointer cover" />
         <div v-else class="w-12 h-12 rounded dark:bg-gray-600 ms-4 flex items-center justify-center cursor-pointer" @click="uiStore.selectAlbum(album?.id)"><i class="bi bi-music-note-beamed fs-5"></i></div>
         <div class="flex flex-col ms-3 title cursor-default" :data-bs-original-title="track ? `<b>${track.title}</b>${artist ? ' - ' + artist.name : ''}<hr class='my-2'/>${album ? album.title : ''}` : ''" data-bs-toggle="tooltip" data-bs-placement="bottom">
             <span class="font-bold truncate" v-if="track">{{ track.title }}</span>
-            <span class="text-sm truncate cursor-pointer" @click="uiStore.selectArtist(artist.id)" v-if="artist">{{ artist.name }}</span>
+            <span class="text-sm truncate cursor-pointer" @click="uiStore.selectArtist(artist.id); uiStore.setPage('artist'); uiStore.selectGenre('')" v-if="artist">{{ artist.name }}</span>
         </div>
         <div class="seek-bar flex-grow ms-4">
             <input type="range" class="form-range w-full" min="0" :max="playerStore.duration" step="1" :value="playerStore.currentTime" @input="playerStore.seek($event.target?.value)" />

@@ -26,7 +26,7 @@
             </div>
         </header>
         <div class="overflow-y-auto">
-            <TrackList :tracks="tracks" @activateTrack="activateTrack" />
+            <TrackList :tracks="tracks" :withArtist="libraryStore.albumHasVariousArtists(album)" @activateTrack="activateTrack" />
         </div>
     </div>
 </template>

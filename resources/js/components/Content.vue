@@ -21,18 +21,23 @@
             "
         ></Artists>
         <Album
-            v-if="uiStore.page === 'album'"
+            v-if="uiStore.page === 'album' && uiStore.selectedAlbumId"
             :album="libraryStore.getAlbum(uiStore.selectedAlbumId)"
         ></Album>
         <Albums
             v-if="uiStore.page === 'artist'"
             :list="libraryStore.albumsOfArtist(uiStore.selectedArtistId)"
+            :listAppearsIn="libraryStore.albumsWithArtist(uiStore.selectedArtistId)"
         ></Albums>
         <Albums
             v-if="uiStore.page === 'genre'"
             :list="libraryStore.albumsOfGenre(uiStore.selectedGenre)"
         ></Albums>
         <Queue v-if="uiStore.page === 'queue'"></Queue>
+        <Albums
+            v-if="uiStore.page === 'collections'"
+            :list="libraryStore.collections"
+        ></Albums>
     </div>
 </template>
 
