@@ -1,7 +1,7 @@
 <template>
     <ul class="list-group list-group-flush user-select-none mx-auto">
         <template v-for="(track, index) in tracks" :key="track.id">
-            <li v-if="diskNoChanged(index)" class="list-group-item disabled">
+            <li v-if="hasMultipleDisks && diskNoChanged(index)" class="list-group-item disabled">
                 Disc {{ track.disk_no }}
             </li>
             <li
@@ -47,7 +47,7 @@ import { Track } from "../types";
 import { usePlayerStore } from "../stores/player";
 import { useLibraryStore } from "../stores/library";
 import { useUiStore } from "../stores/ui";
-import { onMounted } from "vue";
+import { onMounted,computed } from "vue";
 
 const playerStore = usePlayerStore();
 const libraryStore = useLibraryStore();
@@ -57,6 +57,9 @@ const props = defineProps<{
     withArtist?: boolean;
 }>();
 
+const hasMultipleDisks = computed(() => {
+    return new Set(props.tracks.map((t) => t.disk_no)).size > 1;
+});
 const diskNoChanged = (index: number) => {
     if (index === 0) return props.tracks[0].disk_no !== null;
     return props.tracks[index].disk_no !== props.tracks[index - 1].disk_no;

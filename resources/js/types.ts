@@ -6,6 +6,7 @@ export type Album = {
     artist_id: number;
     year?: number;
     cover_path?: string;
+    is_various?: boolean;
 };
 export type Track = {
     id: number;

@@ -130,6 +130,18 @@ class ScanMusic extends Command
             $this->line("✓ Indexed: {$artist} – {$title}");
         }
 
+        // Check if albums have various artists
+        foreach(Album::all() as $album){
+            foreach($album->tracks->pluck('artist_id')->unique() as $artistId){
+                if($artistId != $album->artist_id){
+                    $album->artist_id = null;
+                    $album->is_various = true;
+                    $album->save();
+                    break;
+                }
+            }
+        }
+
         $this->info('Done.');
         return self::SUCCESS;
     }

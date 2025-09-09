@@ -18,6 +18,7 @@ return new class extends Migration {
             $t->string('musicbrainz_albumid')->collation('latin1_bin')->nullable()->unique();
             $t->string('title')->index();
             $t->foreignId('artist_id')->nullable();
+            $t->boolean('is_various')->default(false);
             $t->integer('year')->nullable();
             $t->string('cover_path')->nullable(); // cached JPEG/PNG in storage
             $t->string('path')->index(); // original path for uniqueness

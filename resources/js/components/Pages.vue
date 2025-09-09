@@ -7,6 +7,7 @@
             <li class="list-group-item list-group-item-action" :class="{'active': uiStore.page === 'playlists'}" @click="onSelectPage('playlists')"><i class="bi bi-music-note-list"></i> <div class="">Playlists</div></li>
             <li class="list-group-item list-group-item-action" :class="{'active': uiStore.page === 'queue'}" @click="onSelectPage('queue')"><i class="bi bi-list-columns"></i> <div class="">Now Playing</div></li>
             <li class="list-group-item list-group-item-action" :class="{'active': uiStore.page === 'collections'}" @click="onSelectPage('collections')"><i class="bi bi-music-player-fill"></i> <div class="">Collections</div></li>
+            <li class="list-group-item list-group-item-action" :class="{'active': uiStore.page === 'search'}" @click="onSelectPage('search')"><i class="bi bi-search"></i> <div class="">Search</div></li>
         </ul>
         <footer class="p-3">
             <small class="text-muted">TuneSleeve v0.4.0</small>

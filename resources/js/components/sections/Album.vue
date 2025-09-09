@@ -20,7 +20,7 @@
                 </h5>
                 <div class="card-body">
                     <p class="card-text">
-                        {{ artist?.name || "No artist available." }}
+                        {{ album?.is_various ? 'Various Artists' : (artist?.name || "No artist available.") }}
                     </p>
                 </div>
             </div>
