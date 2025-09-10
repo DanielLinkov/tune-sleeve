@@ -12,12 +12,18 @@ app.mount('#app');
 const tooltip = new bootstrap.Tooltip(document.body, {
     selector: '[data-bs-toggle="tooltip"]',
     container: 'body',
-    trigger: 'hover focus',
+    trigger: 'hover',
     placement: 'top',
     html: true,
 });
 document.body.addEventListener('click', (e) => {
     document.body.querySelectorAll('.tooltip.show').forEach((el) => {
-        el.remove();
+        // Hide tooltip if the clicked element is not the tooltip itself
+        if (!el.contains(e.target)) {
+            const tooltipInstance = bootstrap.Tooltip.getInstance(el);
+            if (tooltipInstance) {
+                tooltipInstance.hide();
+            }
+        }
     });
 });

@@ -5,7 +5,7 @@ export type Page = 'artists' | 'artist' | 'albums' | 'album' | 'queue' | 'genres
 
 export const useUiStore = defineStore('ui', {
   state: () => ({
-    page: 'albums' as Page,
+    page: 'queue' as Page,
     selectedArtistId: null as number | null,
     selectedAlbumId:  null as number | null,
     selectedGenre: null as string | null,

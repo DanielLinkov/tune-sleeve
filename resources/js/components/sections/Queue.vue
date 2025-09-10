@@ -2,6 +2,7 @@
     <div v-if="playerStore.queue.length" class="overflow-y-auto w-100 h-100">
         <TrackList
             :tracks="playerStore.queue"
+            :withArtist="true"
             @activateTrack="onActivateTrack"
         ></TrackList>
     </div>
