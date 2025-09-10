@@ -110,7 +110,8 @@
 import { useLibraryStore } from "../../stores/library";
 import { useUiStore } from "../../stores/ui";
 import { Album } from "../../types";
-import { computed } from "vue";
+import { computed, onBeforeUnmount } from "vue";
+import { Tooltip } from "bootstrap";
 
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();
@@ -134,6 +135,15 @@ const props = defineProps({
 
 const listAppearsInVarious = computed(() => {
     return props.listAppearsIn.filter(album => props.list.map(a => a.id).includes(album.id) === false);
+});
+
+onBeforeUnmount(() => {
+    document.body.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+        const tooltipInstance = Tooltip.getInstance(el);
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+        }
+    });
 });
 </script>
 

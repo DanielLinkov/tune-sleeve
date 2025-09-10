@@ -161,7 +161,6 @@ export const useLibraryStore = defineStore("library", {
                     .filter((t) => !!t) as Track[];
                 if (queueTracks.length) {
                     const playerStore = usePlayerStore();
-                    console.debug("Restoring player queue", queueTracks);
                     playerStore.enqueue(queueTracks);
                     const idx = Number(localStorage.getItem("queue-index"));
                     if (!Number.isNaN(idx) && idx >= 0 && idx < playerStore.queue.length) {
