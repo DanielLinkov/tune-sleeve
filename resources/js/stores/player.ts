@@ -8,6 +8,8 @@ export const usePlayerStore = defineStore('player', {
     queue: [] as Track[],
     index: -1,
     isPlaying: false,
+    isShuffling: false,
+    repeatMode: 'none' as 'none' | 'one' | 'all',
     currentTime: 0,
     duration: 0,
     _player: null as Player | null,
@@ -28,6 +30,8 @@ export const usePlayerStore = defineStore('player', {
         this.queue = s.queue;
         this.index = s.index;
         this.isPlaying = s.isPlaying;
+        this.isShuffling = s.isShuffling;
+        this.repeatMode = s.repeatMode;
         this.currentTime = s.currentTime;
         this.duration = s.duration;
       });
@@ -47,5 +51,8 @@ export const usePlayerStore = defineStore('player', {
     clear()            { this._player?.clear(); },
     enqueue(t: Track | Track[]) { this._player?.enqueue(t); },
     removeAt(i: number) { this._player?.removeAt(i); },
+    toggleShuffle() { this._player?.toggleShuffle(); },
+    setRepeat(mode: 'none' | 'one' | 'all') { this._player?.setRepeat(mode); },
+    toggleRepeat() { this._player?.toggleRepeat(); },
   },
 });

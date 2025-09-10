@@ -28,6 +28,15 @@
                 <span>{{ new Date(playerStore.duration * 1000).toISOString().substring(14, 19) }}</span>
             </div>
         </div>
+        <div class="btn-group ms-4">
+            <button class="btn btn-sm" :class="[playerStore.repeatMode === 'none' ? 'text-muted' : 'text-white']" @click="playerStore.toggleRepeat">
+                <i v-if="playerStore.repeatMode === 'one'" class="bi bi-repeat-1"></i>
+                <i v-else class="bi bi-repeat"></i>
+            </button>
+            <button class="btn btn-sm" :class="[playerStore.isShuffling ? 'text-white' : 'text-muted']" @click="playerStore.toggleShuffle">
+                <i class="bi bi-shuffle"></i>
+            </button>
+        </div>
     </div>
 </template>
 
