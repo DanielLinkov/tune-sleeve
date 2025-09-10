@@ -8,6 +8,7 @@ export type PlayerSnapshot = {
     repeatMode: "none" | "one" | "all";
     currentTime: number;
     duration: number;
+    volume: number;
 };
 
 type Listener = (s: PlayerSnapshot) => void;
@@ -22,6 +23,7 @@ export class Player {
         repeatMode: "none",
         currentTime: 0,
         duration: 0,
+        volume: 1,
     };
     private listeners = new Set<Listener>();
 
@@ -157,6 +159,11 @@ export class Player {
                 this.state.repeatMode = "none";
                 break;
         }
+        this.emit();
+    }
+    setVolume(v: number) {
+        this.audio.volume = Math.min(1, Math.max(0, v));
+        this.state.volume = v;
         this.emit();
     }
 }

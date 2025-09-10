@@ -12,6 +12,7 @@ export const usePlayerStore = defineStore('player', {
     repeatMode: 'none' as 'none' | 'one' | 'all',
     currentTime: 0,
     duration: 0,
+    volume: 1,
     _player: null as Player | null,
     _unsub: null as null | (() => void),
   }),
@@ -19,6 +20,7 @@ export const usePlayerStore = defineStore('player', {
     nowPlaying: (s) => s.queue[s.index] ?? null,
     canPrev: (s) => s.index > 0,
     canNext: (s) => s.index >= 0 && s.index + 1 < s.queue.length,
+    getVolume: (s) => s.volume,
   },
   actions: {
     init() {
@@ -34,6 +36,7 @@ export const usePlayerStore = defineStore('player', {
         this.repeatMode = s.repeatMode;
         this.currentTime = s.currentTime;
         this.duration = s.duration;
+        this.volume = s.volume;
       });
     },
     destroy() { this._unsub?.(); this._player = null; },
@@ -54,5 +57,6 @@ export const usePlayerStore = defineStore('player', {
     toggleShuffle() { this._player?.toggleShuffle(); },
     setRepeat(mode: 'none' | 'one' | 'all') { this._player?.setRepeat(mode); },
     toggleRepeat() { this._player?.toggleRepeat(); },
+    setVolume(v: number) { this._player?.setVolume(v); },
   },
 });

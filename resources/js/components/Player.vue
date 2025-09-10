@@ -37,6 +37,15 @@
                 <i class="bi bi-shuffle"></i>
             </button>
         </div>
+        <div class="dropdown ms-4">
+            <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-volume-up"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end p-3" style="width: 200px;">
+                <label class="form-label">Volume: {{ Math.round(playerStore.getVolume * 100) }}%</label>
+                <input type="range" class="form-range" min="0" max="1" step="0.01" :value="playerStore.getVolume" @input="playerStore.setVolume($event.target?.value)" />
+            </ul>
+        </div>
     </div>
 </template>
 
