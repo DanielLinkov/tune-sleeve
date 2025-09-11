@@ -3,6 +3,7 @@
         <TrackList
             :tracks="playerStore.queue"
             :withArtist="true"
+            :noDiskLabels="true"
             @activateTrack="onActivateTrack"
         ></TrackList>
     </div>

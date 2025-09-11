@@ -20,13 +20,43 @@
                 </h5>
                 <div class="card-body">
                     <p class="card-text">
-                        {{ album?.is_various ? 'Various Artists' : (artist?.name || "No artist available.") }}
+                        {{
+                            album?.is_various
+                                ? "Various Artists"
+                                : artist?.name || "No artist available."
+                        }}
                     </p>
+                </div>
+            </div>
+            <div class="ms-auto">
+                <div class="btn-group me-3">
+                    <button
+                        class="btn btn-dark btn-sm"
+                        :disabled="!tracks.length"
+                        @click="activateTrack(tracks[0].id)"
+                        title="Play Album"
+                        data-bs-toggle="tooltip"
+                    >
+                        <i class="bi bi-play-fill"></i>
+                    </button>
+                    <button
+                        class="btn btn-dark btn-sm"
+                        :disabled="!tracks.length"
+                        @click="playerStore.enqueue(tracks)"
+                        title="Add Album to Queue"
+                        data-bs-toggle="tooltip"
+                    >
+                        <i class="bi bi-plus"></i>
+                    </button>
                 </div>
             </div>
         </header>
         <div class="overflow-y-auto">
-            <TrackList :tracks="tracks" :withArtist="libraryStore.albumHasVariousArtists(album)" @activateTrack="activateTrack" />
+            <TrackList
+                :tracks="tracks"
+                :withArtist="libraryStore.albumHasVariousArtists(album)"
+                @activateTrack="activateTrack"
+            />
         </div>
     </div>
 </template>

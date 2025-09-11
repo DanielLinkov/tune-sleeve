@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-warning-subtle w-80">
+    <div class="card bg-info-subtle w-80">
         <div class="card-header">
             <i class="bi bi-person-lines-fill"></i> Artists
         </div>

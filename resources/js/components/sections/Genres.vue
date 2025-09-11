@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-warning-subtle w-sm">
+    <div class="card bg-info-subtle w-sm">
         <div class="card-header">
             <i class="bi bi-music-note-list"></i> Genres
         </div>

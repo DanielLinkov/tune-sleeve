@@ -1,7 +1,7 @@
 <template>
-    <ul class="list-group list-group-flush user-select-none mx-auto">
+    <ul class="list-group list-group-flush user-select-none mx-auto" :class="{ 'thin-view': withArtist }">
         <template v-for="(track, index) in tracks" :key="track.id">
-            <li v-if="hasMultipleDisks && diskNoChanged(index)" class="list-group-item disabled">
+            <li v-if="!noDiskLabels && hasMultipleDisks && diskNoChanged(index)" class="list-group-item disabled">
                 Disc {{ track.disk_no }}
             </li>
             <li
@@ -55,6 +55,7 @@ const uiStore = useUiStore();
 const props = defineProps<{
     tracks: Track[];
     withArtist?: boolean;
+    noDiskLabels?: boolean;
 }>();
 
 const hasMultipleDisks = computed(() => {
@@ -80,6 +81,9 @@ onMounted(() => {
 <style scoped>
 .list-group {
     max-width: 400px;
+}
+.list-group.thin-view {
+    --bs-list-group-item-padding-y: 0.25rem;
 }
 .list-group-item {
     cursor: pointer;
