@@ -6,7 +6,7 @@
             </li>
             <li
                 class="list-group-item list-group-item-action d-flex align-items-start gap-2"
-                @click="$emit('activateTrack', track.id)"
+                @click="!$event.defaultPrevented && $emit('activateTrack', track.id)"
                 :data-track-id="track.id"
             >
                 <div
@@ -36,6 +36,30 @@
                             .toISOString()
                             .slice(14, 19)
                     }}
+                </div>
+                <div class="dropdown"
+                    @click.prevent
+                >
+                    <button
+                        class="btn btn-transparent text-muted"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button class="dropdown-item" @click="uiStore.selectAlbum(track.album_id); uiStore.setPage('album');"
+                            v-show="uiStore.selectedAlbumId != track.album_id || uiStore.page != 'album'"
+                            >
+                                Go to Album
+                            </button>
+                            <button class="dropdown-item" @click="uiStore.selectArtist(track.artist_id); uiStore.setPage('artist');">
+                                Go to Artist
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </li>
         </template>
@@ -80,10 +104,10 @@ onMounted(() => {
 
 <style scoped>
 .list-group {
-    max-width: 400px;
+    max-width: 450px;
 }
 .list-group.thin-view {
-    --bs-list-group-item-padding-y: 0.25rem;
+    --bs-list-group-item-padding-y: 0.15rem;
 }
 .list-group-item {
     cursor: pointer;

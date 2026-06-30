@@ -156,7 +156,8 @@ export const useLibraryStore = defineStore("library", {
             const playerQueue = localStorage.getItem("player-queue");
             if (playerQueue) {
                 const queueIds: number[] = JSON.parse(playerQueue);
-                const queueTracks = queueIds
+                const uniqueQueueIds = Array.from(new Set(queueIds));
+                const queueTracks = uniqueQueueIds
                     .map((id) => this.tracks.find((t) => t.id === id))
                     .filter((t) => !!t) as Track[];
                 if (queueTracks.length) {

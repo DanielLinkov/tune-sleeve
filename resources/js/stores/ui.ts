@@ -14,7 +14,7 @@ export const useUiStore = defineStore('ui', {
   actions: {
     setPage(p: Page) { this.page = p; },
     selectArtist(id: number | null) { this.selectedArtistId = id; },
-    selectAlbum(id: number | null | undefined)  { this.selectedAlbumId = id; },
+    selectAlbum(id: number | null)  { this.selectedAlbumId = id; },
     selectGenre(genre: string) { this.selectedGenre = genre; },
     setSearch(q: string) { this.search = q; },
   },

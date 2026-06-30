@@ -26,6 +26,7 @@
         ></Album>
         <Albums
             v-if="uiStore.page === 'artist'"
+            :title="'Albums by ' + (libraryStore.getArtist(uiStore.selectedArtistId)?.name || 'Unknown Artist')"
             :list="libraryStore.albumsOfArtist(uiStore.selectedArtistId)"
             :listAppearsIn="libraryStore.albumsWithArtist(uiStore.selectedArtistId)"
         ></Albums>
@@ -38,6 +39,7 @@
             v-if="uiStore.page === 'collections'"
             :list="libraryStore.collections"
         ></Albums>
+        <Search v-if="uiStore.page === 'search'"></Search>
     </div>
 </template>
 
@@ -48,6 +50,7 @@ import Albums from "./sections/Albums.vue";
 import Artists from "./sections/Artists.vue";
 import Album from "./sections/Album.vue";
 import Queue from "./sections/Queue.vue";
+import Search from "./sections/Search.vue";
 import { useLibraryStore } from "../stores/library";
 import { useUiStore } from "../stores/ui";
 

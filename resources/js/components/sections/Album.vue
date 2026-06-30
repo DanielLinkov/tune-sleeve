@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-column h-100">
-        <header class="d-flex align-items-center p-3 bg-info-subtle text-white">
+        <header class="d-flex align-items-center p-2 px-3 bg-info-subtle text-white">
             <img
                 v-if="album?.cover_path"
                 :src="libraryStore.coverUrl(album)"

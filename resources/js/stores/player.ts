@@ -43,7 +43,8 @@ export const usePlayerStore = defineStore('player', {
       ? Math.min(1, Math.max(0, Number(localStorage.getItem('player-volume'))))
       : 1);
       this._player.setShuffle(localStorage.getItem('player-shuffle') === '1');
-      this._player.setRepeat(localStorage.getItem('player-repeat') as 'none' | 'one' | 'all');
+      const repeatMode = localStorage.getItem('player-repeat') as 'none' | 'one' | 'all';
+      this._player.setRepeat(repeatMode === 'none' || repeatMode === 'one' || repeatMode === 'all' ? repeatMode : 'none');
     },
     destroy() { this._unsub?.(); this._player = null; },
 
@@ -58,15 +59,21 @@ export const usePlayerStore = defineStore('player', {
     prev()             { this._player?.prev(); },
     seek(s: number)    { this._player?.seek(s); },
     clear()            { this._player?.clear(); },
-    enqueue(t: Track | Track[]) {
-        this._player?.enqueue(t);
+    async enqueue(t: Track | Track[]) {
+        // Check if the track(s) are already in the queue
+        const tracksToAdd = Array.isArray(t) ? t : [t];
+        const existingTrackIds = new Set(this.queue.map(track => track.id));
+        const uniqueTracksToAdd = tracksToAdd.filter(track => !existingTrackIds.has(track.id));
+        this._player?.enqueue(uniqueTracksToAdd);
         const queueIds = this.queue.map(x => x.id);
-        localStorage.setItem('player-queue', JSON.stringify(queueIds));
+        // Export only unique track IDs to localStorage
+        const uniqueQueueIds = Array.from(new Set(queueIds));
+        localStorage.setItem('player-queue', JSON.stringify(uniqueQueueIds));
     },
     removeAt(i: number) { this._player?.removeAt(i); },
     toggleShuffle() {
       this._player?.toggleShuffle();
-      localStorage.setItem('player-shuffle', this.isShuffling ? '0' : '1');
+      localStorage.setItem('player-shuffle', this.isShuffling ? '1' : '0');
     },
     setRepeat(mode: 'none' | 'one' | 'all') {
       this._player?.setRepeat(mode);
