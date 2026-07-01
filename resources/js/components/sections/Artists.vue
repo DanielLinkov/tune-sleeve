@@ -1,7 +1,15 @@
 <template>
-    <div class="card bg-info-subtle w-80">
-        <div class="card-header">
-            <i class="bi bi-person-lines-fill"></i> Artists
+    <div class="card bg-info-subtle w-110">
+        <div class="card-header flex items-center gap-2" v-if="!inGenreMode">
+            <i class="bi bi-person-lines-fill"></i>
+            <input
+                type="text"
+                class="form-control form-control-sm ms-2"
+                placeholder="Search artists... [Enter to select, Esc to clear]"
+                @keydown.escape="artistSearchQuery = ''"
+                @keydown.enter="if(listFiltered.length === 1) {uiStore.selectArtist(listFiltered[0].id); !inGenreMode && uiStore.setPage('artist') || inGenreMode && uiStore.setPage('genre-artist')}"
+                v-model="artistSearchQuery"
+            />
         </div>
         <div class="overflow-y-auto">
             <div class="list-group user-select-none">
@@ -10,9 +18,9 @@
                     :class="{ active: artist.id === uiStore.selectedArtistId }"
                     :data-id="artist.id"
                     :title="artist.name"
-                    v-for="artist in list"
+                    v-for="artist in listFiltered"
                     :key="artist.id"
-                    @click="uiStore.selectArtist(artist.id); uiStore.setPage('artist')"
+                    @click="uiStore.selectArtist(artist.id); !inGenreMode && uiStore.setPage('artist') || inGenreMode && uiStore.setPage('genre-artist')"
                 >
                     {{ artist.name }}
                 </div>
@@ -22,15 +30,25 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
+import { onMounted, watch, ref, computed } from "vue";
 import { useUiStore } from "../../stores/ui";
 
 const uiStore = useUiStore();
+const inGenreMode = uiStore.page === 'genre' || uiStore.page === 'genre-artist';
+const artistSearchQuery = ref('');
 
-defineProps<{
+const props = defineProps<{
     list: Array<{ id: number; name: string }>;
 }>();
 
+const listFiltered = computed(() => {
+    if (artistSearchQuery.value.trim() === '') {
+        return props.list;
+    }
+    return props.list.filter(artist =>
+        artist.name.toLowerCase().includes(artistSearchQuery.value.toLowerCase())
+    );
+});
 const scrollSelectedIntoView = () => {
     if(uiStore.selectedArtistId !== null) {
         const el = document.querySelector(`[data-id='${uiStore.selectedArtistId}']`);

@@ -25,13 +25,13 @@
             :album="libraryStore.getAlbum(uiStore.selectedAlbumId)"
         ></Album>
         <Albums
-            v-if="uiStore.page === 'artist'"
+            v-if="uiStore.page === 'artist' || uiStore.page === 'genre-artist'"
             :title="'Albums by ' + (libraryStore.getArtist(uiStore.selectedArtistId)?.name || 'Unknown Artist')"
             :list="libraryStore.albumsOfArtist(uiStore.selectedArtistId)"
             :listAppearsIn="libraryStore.albumsWithArtist(uiStore.selectedArtistId)"
         ></Albums>
         <Albums
-            v-if="uiStore.page === 'genre'"
+            v-if="uiStore.page === 'genre' || (uiStore.page === 'genres' && uiStore.selectedGenre)"
             :list="libraryStore.albumsOfGenre(uiStore.selectedGenre)"
         ></Albums>
         <Queue v-if="uiStore.page === 'queue'"></Queue>

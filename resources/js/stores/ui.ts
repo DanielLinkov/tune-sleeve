@@ -1,7 +1,7 @@
 // src/stores/ui.ts
 import { defineStore } from 'pinia';
 
-export type Page = 'artists' | 'artist' | 'albums' | 'album' | 'queue' | 'genres' | 'genre' | 'playlists' | 'playlist' | 'collections' | 'search';
+export type Page = 'artists' | 'artist' | 'albums' | 'album' | 'queue' | 'genre-artist' | 'genres' | 'genre' | 'playlists' | 'playlist' | 'collections' | 'search';
 
 export const useUiStore = defineStore('ui', {
   state: () => ({
@@ -15,7 +15,7 @@ export const useUiStore = defineStore('ui', {
     setPage(p: Page) { this.page = p; },
     selectArtist(id: number | null) { this.selectedArtistId = id; },
     selectAlbum(id: number | null)  { this.selectedAlbumId = id; },
-    selectGenre(genre: string) { this.selectedGenre = genre; },
+    selectGenre(genre: string | null) { this.selectedGenre = genre; },
     setSearch(q: string) { this.search = q; },
   },
 });

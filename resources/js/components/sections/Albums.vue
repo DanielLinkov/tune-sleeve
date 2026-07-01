@@ -1,5 +1,9 @@
 <template>
-    <div class="card bg-info-subtle flex-grow-1">
+    <div class="card bg-info-subtle flex-grow-1 position-relative">
+        <Artists :list="uiStore.selectedGenre ? libraryStore.artistsOfGenre(uiStore.selectedGenre) : libraryStore.artists"
+            class="position-absolute top-0 right-full w-70! h-full! z-10 shadow"
+            v-if="uiStore.page === 'genre' || uiStore.page === 'genre-artist'"
+        ></Artists>
         <div class="card-header">
             <i class="bi bi-disc"></i>
             {{ title }} ({{ list.length }})
@@ -110,8 +114,9 @@
 import { useLibraryStore } from "../../stores/library";
 import { useUiStore } from "../../stores/ui";
 import { Album } from "../../types";
-import { computed, onBeforeUnmount } from "vue";
+import { computed, onBeforeUnmount, onMounted } from "vue";
 import { Tooltip } from "bootstrap";
+import Artists from "./Artists.vue";
 
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();
@@ -137,6 +142,8 @@ const listAppearsInVarious = computed(() => {
     return props.listAppearsIn.filter(album => props.list.map(a => a.id).includes(album.id) === false);
 });
 
+onMounted(() => {
+});
 onBeforeUnmount(() => {
     document.body.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
         const tooltipInstance = Tooltip.getInstance(el);
