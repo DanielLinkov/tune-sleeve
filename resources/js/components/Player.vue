@@ -192,7 +192,7 @@ const volumeDbLabel = computed(() => {
     const volume = playerStore.getVolume;
 
     if (volume === 0) {
-        return "-";
+        return "----";
     }
 
     return `${Math.round(20 * Math.log10(volume))} dB`;
