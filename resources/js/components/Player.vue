@@ -43,7 +43,7 @@
         <div
             v-else
             class="w-12 h-12 rounded dark:bg-gray-600 ms-4 flex items-center justify-center cursor-pointer"
-            @click="uiStore.selectAlbum(album?.id)"
+            @click="uiStore.selectAlbum(album?.id ?? null)"
         >
             <i class="bi bi-music-note-beamed fs-5"></i>
         </div>
@@ -167,7 +167,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import { useLibraryStore } from "../stores/library";
 import { usePlayerStore } from "../stores/player";
 import { useUiStore } from "../stores/ui";
@@ -194,6 +194,23 @@ const artist = computed(() =>
         ? libraryStore.getArtist(playerStore.nowPlaying?.artist_id)
         : null
 );
+
+const handleKeydown = (event: KeyboardEvent) => {
+    if (event.code === "Space") {
+        event.preventDefault();
+        if (playerStore.isPlaying) {
+            playerStore.pause();
+        } else {
+            playerStore.play();
+        }
+    }
+};
+onMounted(() => {
+    document.addEventListener("keydown", handleKeydown);
+});
+onUnmounted(() => {
+    document.removeEventListener("keydown", handleKeydown);
+});
 </script>
 
 <style scoped>
