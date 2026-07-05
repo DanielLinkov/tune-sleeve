@@ -91,7 +91,6 @@ const onDrag = (event: MouseEvent | TouchEvent) => {
     left: 0;
     display: flex;
     justify-content: flex-end;
-    align-items: center;
-    padding-right: 10px; /* Adjust as needed */
+    align-items: stretch;
 }
 </style>

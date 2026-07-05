@@ -1,9 +1,8 @@
 // src/stores/library.ts
 import { defineStore } from "pinia";
-import { fetchLibrary, savePlaylistTracks, createPlaylist, fetchPlaylists } from "../services/api";
+import { fetchLibrary, savePlaylistTracks, createPlaylist, fetchPlaylists, deletePlaylist } from "../services/api";
 import type { Artist, Album, Track, LibraryPayload, Playlist, PlaylistPayload } from "../types";
 import { usePlayerStore } from "./player";
-import { escapeHtml } from "../utils";
 
 export const useLibraryStore = defineStore("library", {
     state: () => ({
@@ -224,8 +223,17 @@ export const useLibraryStore = defineStore("library", {
             await savePlaylistTracks(playlist.id, playlist.tracks);
             return `Track "${track.title}" added to playlist "${playlist.name}"`;
         },
-        removePlaylist(playlistId: number) {
+        async deletePlaylist(playlistId: number) {
+            await deletePlaylist(playlistId);
             this.playlists = this.playlists.filter((p) => p.id !== playlistId);
+        },
+        async removeTrackFromPlaylist(playlistId: number, trackId: number) {
+            const playlist = this.playlists.find((p) => p.id === playlistId);
+            if (!playlist) throw new Error("Playlist not found");
+
+            const newTrackList = playlist.tracks.filter((id) => id !== trackId);
+            await savePlaylistTracks(playlist.id, newTrackList);
+            playlist.tracks = newTrackList;
         },
         updatePlaylist(updatedPlaylist: Playlist) {
             const index = this.playlists.findIndex(

@@ -43,6 +43,28 @@ async function addPlaylist() {
     }
 }
 
+const confirmDeleteList = (playlistId: number, event: Event) => {
+    event.stopPropagation();
+    if (
+        confirm(
+            "Are you sure you want to delete this playlist? This action cannot be undone.",
+        )
+    ) {
+        inProgress.value = true;
+        libraryStore
+            .deletePlaylist(playlistId)
+            .then(() => {
+                toast.success("Playlist deleted successfully");
+            })
+            .catch((error) => {
+                toast.error(error.message || "Failed to delete playlist");
+            })
+            .finally(() => {
+                inProgress.value = false;
+            });
+    }
+};
+
 const playPlaylist = (playlistId: number) => {
     playerStore.clearQueue();
     playerStore.enqueue(libraryStore.getPlaylistTracks(playlistId));
@@ -94,14 +116,9 @@ onBeforeUnmount(() => {
                             {{ playlist.name }}
                         </button>
                         <button
-                            :data-bs-toggle="[
-                                playlist.tracks.length && 'collapse',
-                            ]"
+                            data-bs-toggle="collapse"
                             :data-bs-target="'#playlist-' + playlist.id"
-                            class="badge text-bg-primary rounded-pill"
-                            :class="[
-                                playlist.tracks.length && 'dropdown-toggle',
-                            ]"
+                            class="badge text-bg-primary rounded-pill dropdown-toggle"
                         >
                             {{
                                 playlist.tracks.length
@@ -111,19 +128,31 @@ onBeforeUnmount(() => {
                         </button>
                     </div>
                     <div
-                        class="collapse visible mt-2 bg-body rounded p-2"
+                        class="collapse visible mt-2 bg-body rounded"
                         :id="'playlist-' + playlist.id"
                     >
-                        <div class="flex justify-content-between align-items-center mb-2">
-                            <p class="text-muted p-2">* Slide a track to the left to remove</p>
+                        <div
+                            class="flex justify-content-between align-items-center p-3"
+                        >
+                            <p
+                                class="text-muted py-1 mb-0 text-sm"
+                                v-if="playlist.tracks.length"
+                            >
+                                * Slide a track to the left to remove
+                            </p>
+                            <div v-else></div>
                             <button
-                                class="btn btn-outline-danger btn-sm"
-                                @click="
-                                    libraryStore.deletePlaylist(playlist.id);
-                                "
+                                class="btn btn-danger btn-sm"
+                                @click="confirmDeleteList(playlist.id, $event)"
+                                :disabled="inProgress"
                             >
                                 <i class="bi bi-trash"></i>
                                 Delete Playlist
+                                <span
+                                    v-if="inProgress"
+                                    class="spinner-border spinner-border-sm"
+                                    role="status"
+                                ></span>
                             </button>
                         </div>
                         <ul class="list-group">
@@ -133,10 +162,10 @@ onBeforeUnmount(() => {
                                 )"
                                 :key="track.id"
                             >
-                                <Slidable>
+                                <Slidable :max-offset="75">
                                     <template #action>
                                         <button
-                                            class="btn btn-danger btn-sm"
+                                            class="btn-danger btn rounded-none"
                                             title="Remove from playlist"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="left"
@@ -144,10 +173,10 @@ onBeforeUnmount(() => {
                                                 libraryStore.removeTrackFromPlaylist(
                                                     playlist.id,
                                                     track.id,
-                                                );
+                                                )
                                             "
                                         >
-                                            <i class="bi bi-trash"></i>
+                                            remove
                                         </button>
                                     </template>
                                     <li

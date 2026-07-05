@@ -87,3 +87,13 @@ export async function savePlaylistTracks(playlistId: number, trackIds: number[])
     const json = await res.json();
     return json.message;
 }
+
+export async function deletePlaylist(playlistId: number): Promise<void> {
+    const res = await fetch(`/api/playlists/${playlistId}`, {
+        method: "DELETE",
+        headers: {
+            "X-XSRF-TOKEN": getCsrfToken(),
+        },
+    });
+    if (!res.ok) throw new Error("Failed to delete playlist: " + res.statusText);
+}

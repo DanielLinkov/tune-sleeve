@@ -75,6 +75,7 @@ Route::put('/api/playlists/{playlist}/tracks', function (\Illuminate\Http\Reques
 
 // API endpoint to delete a playlist
 Route::delete('/api/playlists/{playlist}', function (Playlist $playlist) {
+    $playlist->tracks()->detach();
     $playlist->delete();
     return response()->json(['message' => 'Playlist deleted successfully.']);
 });
