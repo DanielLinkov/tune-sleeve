@@ -36,7 +36,7 @@ const foundAlbums = computed(() => {
 });
 
 const playTrack = (track: Track) => {
-    playerStore.clear();
+    playerStore.clearQueue();
     playerStore.enqueue(track);
     playerStore.playTrackId(track.id);
 };
@@ -51,6 +51,7 @@ const playTrack = (track: Track) => {
                 <input
                     type="text"
                     class="form-control mt-2"
+                    @keydown.space.stop
                     placeholder="Search for artists, albums, or songs..."
                     v-model="uiStore.search"
                 />

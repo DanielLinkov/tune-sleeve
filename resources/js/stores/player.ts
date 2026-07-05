@@ -58,7 +58,7 @@ export const usePlayerStore = defineStore('player', {
     next()             { this._player?.next(); },
     prev()             { this._player?.prev(); },
     seek(s: number)    { this._player?.seek(s); },
-    clear()            { this._player?.clear(); },
+    clearQueue()       { this._player?.clearQueue(); },
     async enqueue(t: Track | Track[]) {
         // Check if the track(s) are already in the queue
         const tracksToAdd = Array.isArray(t) ? t : [t];

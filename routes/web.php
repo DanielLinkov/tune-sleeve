@@ -24,8 +24,11 @@ Route::get('/api/music', function(){
     ];
 });
 
+// API endpoint to create a new playlist
 Route::post('/api/playlists', function (\Illuminate\Http\Request $request) {
     try {
+        // Trim the name
+        $request->merge(['name' => trim($request->input('name'))]);
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:playlists,name',
         ]);
@@ -36,6 +39,7 @@ Route::post('/api/playlists', function (\Illuminate\Http\Request $request) {
     }
 });
 
+// API endpoint to get all playlists with their tracks
 Route::get('/api/playlists', function () {
     $playlists = Playlist::all(['id', 'name'])->map(function ($playlist) {
         return [
@@ -47,6 +51,7 @@ Route::get('/api/playlists', function () {
     return response()->json(['playlists' => $playlists]);
 });
 
+// API endpoint to update a playlist's tracks
 Route::put('/api/playlists/{playlist}/tracks', function (\Illuminate\Http\Request $request, Playlist $playlist) {
     try {
         $data = $request->validate([
@@ -68,8 +73,15 @@ Route::put('/api/playlists/{playlist}/tracks', function (\Illuminate\Http\Reques
     return response()->json(['message' => 'Playlist updated successfully.']);
 });
 
+// API endpoint to delete a playlist
+Route::delete('/api/playlists/{playlist}', function (Playlist $playlist) {
+    $playlist->delete();
+    return response()->json(['message' => 'Playlist deleted successfully.']);
+});
+
+// Route to serve album cover images
 Route::get('/cover/{album_id}', function ($album_id) {
-    $album = Album::find($album_id);
+    $album = Album::query()->find($album_id);
     $path = $album ? $album->cover_path : null;
     abort_unless($path && Storage::disk('covers')->exists($path), 404);
     $mime = str_ends_with($path, '.png') ? 'image/png' : 'image/jpeg';

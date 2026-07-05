@@ -116,7 +116,7 @@ export class Player {
         }
     }
 
-    clear() {
+    clearQueue() {
         this.state.queue = [];
         this.state.index = -1;
         this.stop();

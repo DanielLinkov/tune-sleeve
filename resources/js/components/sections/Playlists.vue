@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { useLibraryStore } from "../../stores/library";
-import { ref, nextTick, useTemplateRef } from "vue";
+import { usePlayerStore } from "../../stores/player";
+import { useUiStore } from "../../stores/ui";
+import { ref, nextTick, useTemplateRef, onBeforeUnmount } from "vue";
 import { useToast } from "vue-toastification";
+import { formatDuration } from "../../utils";
+import { Tooltip } from "bootstrap";
+import Slidable from "../Slidable.vue";
 
 const toast = useToast();
 const libraryStore = useLibraryStore();
+const playerStore = usePlayerStore();
+const uiStore = useUiStore();
 const inAddingMode = ref(false);
 const inProgress = ref(false);
 let newPlaylistName = ref("");
@@ -35,6 +42,32 @@ async function addPlaylist() {
         });
     }
 }
+
+const playPlaylist = (playlistId: number) => {
+    playerStore.clearQueue();
+    playerStore.enqueue(libraryStore.getPlaylistTracks(playlistId));
+    playerStore.play();
+};
+
+const playFromTrackOfPlaylist = (playlistId: number, trackId: number) => {
+    const tracks = libraryStore.getPlaylistTracks(playlistId);
+    const startIndex = tracks.findIndex((track) => track.id === trackId);
+    if (startIndex !== -1) {
+        playerStore.clearQueue();
+        playerStore.enqueue(tracks);
+        playerStore.play(startIndex);
+    }
+};
+onBeforeUnmount(() => {
+    document.body
+        .querySelectorAll('[data-bs-toggle="tooltip"]')
+        .forEach((el) => {
+            const tooltipInstance = Tooltip.getInstance(el);
+            if (tooltipInstance) {
+                tooltipInstance.dispose();
+            }
+        });
+});
 </script>
 
 <template>
@@ -45,33 +78,151 @@ async function addPlaylist() {
                 <div
                     v-for="playlist in libraryStore.getPlaylists"
                     :key="playlist.id"
-                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                    class="list-group-item"
                 >
-                    {{ playlist.name }}
-                    <em class="text-muted"
-                        >({{
-                            playlist.tracks.length
-                                ? `${playlist.tracks.length} tracks`
-                                : "empty"
-                        }})</em
+                    <div
+                        class="d-flex justify-content-between align-items-center gap-3"
                     >
+                        <button
+                            class="btn btn-default btn-sm flex-grow-1 text-start"
+                            title="Play this playlist"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="left"
+                            :disabled="!playlist.tracks.length"
+                            @click="playPlaylist(playlist.id)"
+                        >
+                            {{ playlist.name }}
+                        </button>
+                        <button
+                            :data-bs-toggle="[
+                                playlist.tracks.length && 'collapse',
+                            ]"
+                            :data-bs-target="'#playlist-' + playlist.id"
+                            class="badge text-bg-primary rounded-pill"
+                            :class="[
+                                playlist.tracks.length && 'dropdown-toggle',
+                            ]"
+                        >
+                            {{
+                                playlist.tracks.length
+                                    ? `${playlist.tracks.length} tracks`
+                                    : "empty"
+                            }}
+                        </button>
+                    </div>
+                    <div
+                        class="collapse visible mt-2 bg-body rounded p-2"
+                        :id="'playlist-' + playlist.id"
+                    >
+                        <div class="flex justify-content-between align-items-center mb-2">
+                            <p class="text-muted p-2">* Slide a track to the left to remove</p>
+                            <button
+                                class="btn btn-outline-danger btn-sm"
+                                @click="
+                                    libraryStore.deletePlaylist(playlist.id);
+                                "
+                            >
+                                <i class="bi bi-trash"></i>
+                                Delete Playlist
+                            </button>
+                        </div>
+                        <ul class="list-group">
+                            <template
+                                v-for="track in libraryStore.getPlaylistTracks(
+                                    playlist.id,
+                                )"
+                                :key="track.id"
+                            >
+                                <Slidable>
+                                    <template #action>
+                                        <button
+                                            class="btn btn-danger btn-sm"
+                                            title="Remove from playlist"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="left"
+                                            @click="
+                                                libraryStore.removeTrackFromPlaylist(
+                                                    playlist.id,
+                                                    track.id,
+                                                );
+                                            "
+                                        >
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </template>
+                                    <li
+                                        class="list-group-item list-group-item-action list-group-item-info d-flex justify-content-between align-items-center"
+                                    >
+                                        <div class="flex-grow-1">
+                                            <button
+                                                class="btn btn-default btn-sm text-start"
+                                                title="Play from this track"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="left"
+                                                :disabled="!track.duration"
+                                                @click="
+                                                    playFromTrackOfPlaylist(
+                                                        playlist.id,
+                                                        track.id,
+                                                    )
+                                                "
+                                            >
+                                                {{ track.title }}
+                                            </button>
+                                            <div class="text-muted small">
+                                                <button
+                                                    class="btn btn-default btn-sm text-start text-muted"
+                                                    title="View artist"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="left"
+                                                    @click="
+                                                        uiStore.selectArtist(
+                                                            libraryStore.getArtist(
+                                                                track.artist_id,
+                                                            )?.id ?? null,
+                                                        );
+                                                        uiStore.setPage(
+                                                            'artist',
+                                                        );
+                                                        uiStore.selectGenre('');
+                                                    "
+                                                >
+                                                    {{
+                                                        libraryStore.getArtist(
+                                                            track.artist_id,
+                                                        )?.name ??
+                                                        "Unknown Artist"
+                                                    }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="text-muted small">
+                                            {{ formatDuration(track.duration) }}
+                                        </div>
+                                    </li>
+                                </Slidable>
+                            </template>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <button
-                v-if="!inAddingMode"
-                class="btn btn-primary btn-sm mt-4"
-                ref="addPlaylistBtn"
-                @click="
-                    inAddingMode = true;
-                    nextTick(() => {
-                        playlistInput?.focus();
-                    });
-                "
-            >
-                <i class="bi bi-plus"></i> Add Playlist
-            </button>
-            <div v-else>
-                <div class="input-group mt-4">
+            <div class="flex justify-content-end mt-2">
+                <button
+                    v-if="!inAddingMode"
+                    class="btn btn-outline-primary"
+                    ref="addPlaylistBtn"
+                    @click="
+                        inAddingMode = true;
+                        nextTick(() => {
+                            playlistInput?.focus();
+                        });
+                    "
+                >
+                    <i class="bi bi-plus"></i> New Playlist
+                </button>
+            </div>
+            <div v-if="inAddingMode">
+                <div class="input-group">
                     <input
                         v-model="newPlaylistName"
                         ref="playlistInput"
@@ -90,15 +241,19 @@ async function addPlaylist() {
                         autocomplete="off"
                     />
                     <button
-                        class="btn btn-primary"
+                        class="btn btn-light"
                         :disabled="!newPlaylistName.trim().length || inProgress"
                         @click="addPlaylist()"
                     >
-                        <div v-if="inProgress" class="spinner-border spinner-border-sm" role="status"></div>
-                        Add
+                        <div
+                            v-if="inProgress"
+                            class="spinner-border spinner-border-sm"
+                            role="status"
+                        ></div>
+                        Create
                     </button>
                     <button
-                        class="btn btn-danger"
+                        class="btn btn-outline-primary"
                         :disabled="inProgress"
                         @click="
                             inAddingMode = false;

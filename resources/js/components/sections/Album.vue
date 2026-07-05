@@ -79,7 +79,7 @@ const artist = computed(() =>
 );
 
 const activateTrack = (trackId: number) => {
-    playerStore.clear();
+    playerStore.clearQueue();
     playerStore.enqueue(tracks.value);
     const trackIndex = tracks.value.findIndex((t) => t.id === trackId);
     if (trackIndex >= 0) playerStore.playTrackId(trackId);

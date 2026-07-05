@@ -54,12 +54,8 @@
                         }}
                     </div>
                 </div>
-                <div class="text-muted ms-auto">
-                    {{
-                        new Date((track.duration || 0) * 1000)
-                            .toISOString()
-                            .slice(14, 19)
-                    }}
+                <div class="text-muted ms-auto text-sm mt-1">
+                    {{ formatDuration(track.duration || 0) }}
                 </div>
                 <VDropdown theme="bs-dropdown" @click.prevent>
                     <button
@@ -94,6 +90,7 @@
                                 Go to Artist
                             </button>
                             <div class="dropdown-divider"></div>
+                            <div class="dropdown-header">Playlist Options</div>
                             <VDropdown theme="bs-menu">
                                 <button
                                     class="dropdown-item d-flex justify-content-between relative"
@@ -101,7 +98,7 @@
                                     <i
                                         class="bi bi-chevron-compact-left absolute right-full -mr-4"
                                     ></i>
-                                    Add to Playlist
+                                    Add to Existing
                                 </button>
                                 <template #popper>
                                     <div class="dropdown-menu show static!">
@@ -142,7 +139,7 @@
                                     <i
                                         class="bi bi-chevron-compact-left absolute right-full -mr-4"
                                     ></i>
-                                    Create New Playlist
+                                    Add to New
                                 </button>
 
                                 <template #popper="{ hide }">
@@ -154,6 +151,7 @@
                                             <input
                                                 v-model="newPlaylistName"
                                                 type="text"
+                                                placeholder="New Playlist"
                                                 @click.stop
                                                 @keydown.escape="hide()"
                                                 @keyup.enter="
@@ -164,9 +162,10 @@
                                             />
                                             <button
                                                 class="dropdown-item"
+                                                :disabled="!newPlaylistName.trim()"
                                                 @click="addToPlaylist(track.id); hide()"
                                             >
-                                                Add to Playlist
+                                                Create and Add to
                                             </button>
                                         </div>
                                     </div>
@@ -179,7 +178,7 @@
                                     <i
                                         class="bi bi-chevron-compact-left absolute right-full -mr-4"
                                     ></i>
-                                    Remove from Playlist
+                                    Remove from
                                 </button>
                                 <template #popper>
                                     <div class="dropdown-menu show static!">
@@ -228,6 +227,7 @@ import { useLibraryStore } from "../stores/library";
 import { useUiStore } from "../stores/ui";
 import { onMounted, computed, ref } from "vue";
 import { useToast } from "vue-toastification";
+import { formatDuration } from "../utils";
 
 const toast = useToast();
 const newPlaylistName = ref("");

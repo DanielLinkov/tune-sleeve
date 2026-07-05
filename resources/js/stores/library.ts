@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { fetchLibrary, savePlaylistTracks, createPlaylist, fetchPlaylists } from "../services/api";
 import type { Artist, Album, Track, LibraryPayload, Playlist, PlaylistPayload } from "../types";
 import { usePlayerStore } from "./player";
+import { escapeHtml } from "../utils";
 
 export const useLibraryStore = defineStore("library", {
     state: () => ({
@@ -17,6 +18,13 @@ export const useLibraryStore = defineStore("library", {
     getters: {
         getPlaylists(s) {
             return s.playlists.sort((a, b) => a.name.localeCompare(b.name));
+        },
+        getPlaylistTracks: (s) => (playlistId: number) => {
+            const playlist = s.playlists.find((p) => p.id === Number(playlistId));
+            if (!playlist) return [];
+            return playlist.tracks
+                .map((trackId) => s.tracks.find((t) => t.id === trackId))
+                .filter((t): t is Track => !!t);
         },
         albumsByArtist: (s) => {
             const m: Record<number, Album[]> = {};
@@ -213,7 +221,8 @@ export const useLibraryStore = defineStore("library", {
             }
 
             playlist.tracks.push(track.id);
-            return await savePlaylistTracks(playlist.id, playlist.tracks);
+            await savePlaylistTracks(playlist.id, playlist.tracks);
+            return `Track "${track.title}" added to playlist "${playlist.name}"`;
         },
         removePlaylist(playlistId: number) {
             this.playlists = this.playlists.filter((p) => p.id !== playlistId);

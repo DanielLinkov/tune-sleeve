@@ -84,16 +84,8 @@
                 @input="playerStore.seek($event.target?.value)"
             />
             <div class="d-flex justify-content-between text-xs mt-1">
-                <span>{{
-                    new Date(playerStore.currentTime * 1000)
-                        .toISOString()
-                        .substring(14, 19)
-                }}</span>
-                <span>{{
-                    new Date(playerStore.duration * 1000)
-                        .toISOString()
-                        .substring(14, 19)
-                }}</span>
+                <span>{{ formatDuration(playerStore.currentTime) }}</span>
+                <span>{{ formatDuration(playerStore.duration) }}</span>
             </div>
         </div>
         <div class="btn-group ms-4">
@@ -171,6 +163,7 @@ import { computed, onMounted, onUnmounted } from "vue";
 import { useLibraryStore } from "../stores/library";
 import { usePlayerStore } from "../stores/player";
 import { useUiStore } from "../stores/ui";
+import { formatDuration } from "../utils";
 
 const playerStore = usePlayerStore();
 const libraryStore = useLibraryStore();

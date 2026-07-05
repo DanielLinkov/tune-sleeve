@@ -7,7 +7,6 @@ use Symfony\Component\Finder\Finder;
 use getID3;
 use App\Models\{Artist, Album, Track};
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ScanMusic extends Command
 {

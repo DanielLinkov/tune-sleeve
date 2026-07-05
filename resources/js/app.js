@@ -20,7 +20,7 @@ app.use(Toast, {
     closeButton: 'button',
     icon: true,
     rtl: false,
-    toastClassName: 'py-2 align-items-center',
+    toastClassName: 'py-2 align-items-center'
 });
 app.use(FloatingVue, {
     themes: {
