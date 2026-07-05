@@ -81,7 +81,7 @@
                 :max="playerStore.duration"
                 step="1"
                 :value="playerStore.currentTime"
-                @input="playerStore.seek($event.target?.value)"
+                @input="playerStore.seek(+($event.target as HTMLInputElement).value)"
             />
             <div class="d-flex justify-content-between text-xs mt-1">
                 <span>{{ formatDuration(playerStore.currentTime) }}</span>
@@ -142,7 +142,7 @@
             <ul class="dropdown-menu p-3" style="width: 200px">
                 <label class="form-label"
                     >Volume:
-                    {{ Math.round(playerStore.getVolume * 100) }}%</label
+                    {{ volumeDbLabel }}</label
                 >
                 <input
                     type="range"
@@ -150,8 +150,8 @@
                     min="0"
                     max="1"
                     step="0.01"
-                    :value="playerStore.getVolume"
-                    @input="playerStore.setVolume(+$event.target?.value)"
+                    :value="volumeSliderPosition"
+                    @input="onVolumeInput"
                 />
             </ul>
         </div>
@@ -168,6 +168,7 @@ import { formatDuration } from "../utils";
 const playerStore = usePlayerStore();
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();
+const MIN_DB = -60;
 
 function back() {
     if (playerStore.currentTime > 3 || !playerStore.canPrev) {
@@ -187,6 +188,39 @@ const artist = computed(() =>
         ? libraryStore.getArtist(playerStore.nowPlaying?.artist_id)
         : null
 );
+const volumeDbLabel = computed(() => {
+    const volume = playerStore.getVolume;
+
+    if (volume === 0) {
+        return "-";
+    }
+
+    return `${Math.round(20 * Math.log10(volume))} dB`;
+});
+
+const volumeSliderPosition = computed(() => {
+    const volume = playerStore.getVolume;
+
+    if (volume <= 0) {
+        return 0;
+    }
+
+    const db = Math.max(MIN_DB, Math.min(0, 20 * Math.log10(volume)));
+    return (db - MIN_DB) / -MIN_DB;
+});
+
+function onVolumeInput(event: Event) {
+    const position = +((event.target as HTMLInputElement).value);
+
+    if (position <= 0) {
+        playerStore.setVolume(0);
+        return;
+    }
+
+    const db = MIN_DB + position * -MIN_DB;
+    const linearGain = Math.pow(10, db / 20);
+    playerStore.setVolume(linearGain);
+}
 
 const handleKeydown = (event: KeyboardEvent) => {
     if (event.code === "Space") {
