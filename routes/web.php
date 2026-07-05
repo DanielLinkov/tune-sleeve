@@ -6,6 +6,7 @@ use App\Http\Controllers\StreamController;
 use App\Models\Track;
 use App\Models\Album;
 use App\Models\Artist;
+use App\Models\Playlist;
 use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
@@ -21,6 +22,50 @@ Route::get('/api/music', function(){
         'artists' => Artist::all(['id', 'name']),
         'tracks' => Track::all(['id', 'title', 'album_id', 'artist_id', 'duration','disk_no', 'track_no','genre','year']),
     ];
+});
+
+Route::post('/api/playlists', function (\Illuminate\Http\Request $request) {
+    try {
+        $data = $request->validate([
+            'name' => 'required|string|max:255|unique:playlists,name',
+        ]);
+        $playlist = Playlist::create($data);
+        return response()->json(['id' => $playlist->id], 201);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['errors' => $e->errors()], 422);
+    }
+});
+
+Route::get('/api/playlists', function () {
+    $playlists = Playlist::all(['id', 'name'])->map(function ($playlist) {
+        return [
+            'id' => $playlist->id,
+            'name' => $playlist->name,
+            'tracks' => $playlist->tracks()->orderBy('position')->get(['tracks.id'])->pluck('id')->toArray(),
+        ];
+    });
+    return response()->json(['playlists' => $playlists]);
+});
+
+Route::put('/api/playlists/{playlist}/tracks', function (\Illuminate\Http\Request $request, Playlist $playlist) {
+    try {
+        $data = $request->validate([
+            'track_ids' => 'required|array',
+            'track_ids.*' => 'integer|exists:tracks,id',
+        ]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json(['errors' => $e->errors()], 422);
+    }
+
+    // Remove existing tracks from the playlist
+    $playlist->tracks()->detach();
+
+    // Attach new tracks with their positions
+    foreach ($data['track_ids'] as $position => $trackId) {
+        $playlist->tracks()->attach($trackId, ['position' => $position]);
+    }
+
+    return response()->json(['message' => 'Playlist updated successfully.']);
 });
 
 Route::get('/cover/{album_id}', function ($album_id) {

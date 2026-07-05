@@ -1,7 +1,7 @@
 // src/stores/library.ts
 import { defineStore } from "pinia";
-import { fetchLibrary } from "../services/api";
-import type { Artist, Album, Track, LibraryPayload } from "../types";
+import { fetchLibrary, savePlaylistTracks, createPlaylist, fetchPlaylists } from "../services/api";
+import type { Artist, Album, Track, LibraryPayload, Playlist, PlaylistPayload } from "../types";
 import { usePlayerStore } from "./player";
 
 export const useLibraryStore = defineStore("library", {
@@ -11,8 +11,13 @@ export const useLibraryStore = defineStore("library", {
         tracks: [] as Track[],
         genres: [] as string[],
         loaded: false,
+        playlists: [] as Playlist[],
+        loadedPlaylists: false,
     }),
     getters: {
+        getPlaylists(s) {
+            return s.playlists.sort((a, b) => a.name.localeCompare(b.name));
+        },
         albumsByArtist: (s) => {
             const m: Record<number, Album[]> = {};
             s.albums.forEach((a) => {
@@ -169,6 +174,56 @@ export const useLibraryStore = defineStore("library", {
                         playerStore.pause();
                     }
                 }
+            }
+
+            const playlists: PlaylistPayload = await fetchPlaylists();
+            this.playlists = playlists.playlists;
+            this.loadedPlaylists = true;
+        },
+        async addPlaylist(name: string) {
+            if (!name.trim()) return;
+            if (this.playlists.some((p) => p.name === name)) throw new Error(`Playlist with name "${name}" already exists.`);
+
+            const id = await createPlaylist(name);
+            this.playlists.push({ id, name, tracks: [] });
+            return id;
+        },
+        async addTrackToPlaylist(trackId: number, playlistId?: number, newPlaylistName?: string) {
+            const track = this.tracks.find((t) => t.id === trackId);
+            if (!track) throw new Error("Track not found");
+
+            let playlist: Playlist | undefined;
+            if (playlistId !== undefined) {
+                playlist = this.playlists.find((p) => p.id === playlistId);
+                if (!playlist) throw new Error("Playlist not found");
+            } else {
+                // If no playlistId is provided, use the first playlist
+                if (newPlaylistName && newPlaylistName.trim()) {
+                    const id = await createPlaylist(newPlaylistName);
+                    playlist = { id, name: newPlaylistName, tracks: [] };
+                    this.playlists.push(playlist);
+                } else {
+                    playlist = this.playlists[0];
+                    if (!playlist) throw new Error("No playlists available");
+                }
+            }
+
+            if (playlist.tracks.includes(track.id)) {
+                throw new Error(`Track "${track.title}" is already in the playlist "${playlist.name}".`);
+            }
+
+            playlist.tracks.push(track.id);
+            return await savePlaylistTracks(playlist.id, playlist.tracks);
+        },
+        removePlaylist(playlistId: number) {
+            this.playlists = this.playlists.filter((p) => p.id !== playlistId);
+        },
+        updatePlaylist(updatedPlaylist: Playlist) {
+            const index = this.playlists.findIndex(
+                (p) => p.id === updatedPlaylist.id
+            );
+            if (index !== -1) {
+                this.playlists[index] = updatedPlaylist;
             }
         },
     },

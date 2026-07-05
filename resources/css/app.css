@@ -1,6 +1,26 @@
 @import 'tailwindcss';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
+@import 'vue-toastification/dist/index.css';
+@import 'floating-vue/dist/style.css';
 
 .scrollbar-thin {
     scrollbar-width: thin;
+}
+
+.v-popper--theme-bs-dropdown .v-popper__inner,
+.v-popper--theme-bs-menu .v-popper__inner {
+    min-width: 10rem;
+    padding: .5rem 0;
+    margin: 0;
+    color: var(--bs-dropdown-color);
+    background-color: var(--bs-dropdown-bg);
+    background-clip: padding-box;
+    border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+    border-radius: var(--bs-dropdown-border-radius);
+    box-shadow: var(--bs-dropdown-box-shadow);
+}
+
+.v-popper--theme-bs-dropdown .v-popper__arrow-container,
+.v-popper--theme-bs-menu .v-popper__arrow-container {
+    display: none;
 }

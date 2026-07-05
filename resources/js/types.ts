@@ -24,3 +24,13 @@ export type LibraryPayload = {
     albums: Album[];
     tracks: Track[];
 };
+
+export type Playlist = {
+    id: number;
+    name: string;
+    tracks: number[];
+};
+
+export type PlaylistPayload = {
+    playlists: Playlist[];
+};

@@ -40,6 +40,7 @@
             :list="libraryStore.collections"
         ></Albums>
         <Search v-if="uiStore.page === 'search'"></Search>
+        <Playlists v-if="uiStore.page === 'playlists'"></Playlists>
     </div>
 </template>
 
@@ -51,6 +52,7 @@ import Artists from "./sections/Artists.vue";
 import Album from "./sections/Album.vue";
 import Queue from "./sections/Queue.vue";
 import Search from "./sections/Search.vue";
+import Playlists from "./sections/Playlists.vue";
 import { useLibraryStore } from "../stores/library";
 import { useUiStore } from "../stores/ui";
 

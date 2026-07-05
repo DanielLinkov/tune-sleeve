@@ -1,11 +1,13 @@
 <template>
-    <div class="card bg-info-subtle w-110">
+    <div class="card bg-info-subtle w-80">
         <div class="card-header flex items-center gap-2" v-if="!inGenreMode">
             <i class="bi bi-person-lines-fill"></i>
             <input
                 type="text"
                 class="form-control form-control-sm ms-2"
-                placeholder="Search artists... [Enter to select, Esc to clear]"
+                placeholder="Search artists..."
+                title="<strong>Esc</strong> to clear<br/><strong>Enter</strong> to select if only one result"
+                data-bs-toggle="tooltip"
                 @keydown.escape="artistSearchQuery = ''"
                 @keydown.enter="if(listFiltered.length === 1) {uiStore.selectArtist(listFiltered[0].id); !inGenreMode && uiStore.setPage('artist') || inGenreMode && uiStore.setPage('genre-artist')}"
                 v-model="artistSearchQuery"
@@ -18,6 +20,8 @@
                     :class="{ active: artist.id === uiStore.selectedArtistId }"
                     :data-id="artist.id"
                     :title="artist.name"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
                     v-for="artist in listFiltered"
                     :key="artist.id"
                     @click="uiStore.selectArtist(artist.id); !inGenreMode && uiStore.setPage('artist') || inGenreMode && uiStore.setPage('genre-artist')"
