@@ -97,3 +97,17 @@ export async function deletePlaylist(playlistId: number): Promise<void> {
     });
     if (!res.ok) throw new Error("Failed to delete playlist: " + res.statusText);
 }
+
+export async function saveAlbumFavoriteStatus(albumId: number, isFavorite: boolean): Promise<string> {
+    const res = await fetch(`/api/albums/${albumId}/favorite`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "X-XSRF-TOKEN": getCsrfToken(),
+        },
+        body: JSON.stringify({ is_favorite: isFavorite }),
+    });
+    if (!res.ok) throw new Error("Failed to update album favorite status: " + res.statusText);
+    const json = await res.json();
+    return json.message;
+}

@@ -18,6 +18,7 @@
                     @click="
                         uiStore.selectAlbum(album.id);
                         uiStore.setPage('album');
+                        uiStore.selectGenre('');
                     "
                     v-for="album in list as Album[]"
                     :key="album.id"
@@ -51,7 +52,7 @@
                         <h6 class="text-title truncate">
                             {{ album.title }}
                         </h6>
-                        <p class="card-text truncate">
+                        <p class="card-text truncate text-muted text-sm">
                             {{ libraryStore.artistOfAlbum(album.id)?.name }}
                         </p>
                     </div>
@@ -99,7 +100,7 @@
                             <h6 class="text-title truncate">
                                 {{ album.title }}
                             </h6>
-                            <p class="card-text truncate">
+                            <p class="card-text truncate text-muted text-sm">
                                 {{ libraryStore.artistOfAlbum(album.id)?.name }}
                             </p>
                         </div>
@@ -115,7 +116,7 @@ import { useLibraryStore } from "../../stores/library";
 import { useUiStore } from "../../stores/ui";
 import { Album } from "../../types";
 import { computed, onBeforeUnmount, onMounted } from "vue";
-import { Tooltip } from "bootstrap";
+import { disposeTooltips } from "../../utils";
 import Artists from "./Artists.vue";
 
 const libraryStore = useLibraryStore();
@@ -142,15 +143,8 @@ const listAppearsInVarious = computed(() => {
     return props.listAppearsIn.filter(album => props.list.map(a => a.id).includes(album.id) === false);
 });
 
-onMounted(() => {
-});
 onBeforeUnmount(() => {
-    document.body.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
-        const tooltipInstance = Tooltip.getInstance(el);
-        if (tooltipInstance) {
-            tooltipInstance.dispose();
-        }
-    });
+    disposeTooltips();
 });
 </script>
 

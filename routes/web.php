@@ -18,7 +18,7 @@ Route::get('/stream/{track}', [StreamController::class, 'audio'])->name('stream.
 Route::get('/api/music', function(){
     return [
         'status' => 'ok',
-        'albums' => Album::all(['id', 'title', 'artist_id', 'year', 'cover_path','musicbrainz_albumid','is_various']),
+        'albums' => Album::all(['id', 'title', 'artist_id', 'year', 'cover_path','musicbrainz_albumid','is_various','is_favorite']),
         'artists' => Artist::all(['id', 'name']),
         'tracks' => Track::all(['id', 'title', 'album_id', 'artist_id', 'duration','disk_no', 'track_no','genre','year']),
     ];
@@ -55,7 +55,7 @@ Route::get('/api/playlists', function () {
 Route::put('/api/playlists/{playlist}/tracks', function (\Illuminate\Http\Request $request, Playlist $playlist) {
     try {
         $data = $request->validate([
-            'track_ids' => 'required|array',
+            'track_ids' => 'array',
             'track_ids.*' => 'integer|exists:tracks,id',
         ]);
     } catch (\Illuminate\Validation\ValidationException $e) {
@@ -88,3 +88,14 @@ Route::get('/cover/{album_id}', function ($album_id) {
     $mime = str_ends_with($path, '.png') ? 'image/png' : 'image/jpeg';
     return response()->file(Storage::disk('covers')->path($path), ['Content-Type'=>$mime, 'Cache-Control'=>'public, max-age=86400']);
 })->name('cover');
+
+
+// Save album favorite status
+Route::put('/api/albums/{album}/favorite', function (\Illuminate\Http\Request $request, Album $album) {
+    $request->validate([
+        'is_favorite' => 'required|boolean',
+    ]);
+    $album->is_favorite = $request->input('is_favorite');
+    $album->save();
+    return response()->json(['message' => 'Album favorite status updated successfully.']);
+});

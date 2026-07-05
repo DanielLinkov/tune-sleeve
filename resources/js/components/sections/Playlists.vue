@@ -4,8 +4,7 @@ import { usePlayerStore } from "../../stores/player";
 import { useUiStore } from "../../stores/ui";
 import { ref, nextTick, useTemplateRef, onBeforeUnmount } from "vue";
 import { useToast } from "vue-toastification";
-import { formatDuration } from "../../utils";
-import { Tooltip } from "bootstrap";
+import { formatDuration, disposeTooltips, hideTooltips } from "../../utils";
 import Slidable from "../Slidable.vue";
 
 const toast = useToast();
@@ -81,14 +80,7 @@ const playFromTrackOfPlaylist = (playlistId: number, trackId: number) => {
     }
 };
 onBeforeUnmount(() => {
-    document.body
-        .querySelectorAll('[data-bs-toggle="tooltip"]')
-        .forEach((el) => {
-            const tooltipInstance = Tooltip.getInstance(el);
-            if (tooltipInstance) {
-                tooltipInstance.dispose();
-            }
-        });
+    disposeTooltips();
 });
 </script>
 
@@ -170,10 +162,13 @@ onBeforeUnmount(() => {
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="left"
                                             @click="
-                                                libraryStore.removeTrackFromPlaylist(
-                                                    playlist.id,
-                                                    track.id,
-                                                )
+                                                (async () => {
+                                                    await libraryStore.removeTrackFromPlaylist(
+                                                        playlist.id,
+                                                        track.id,
+                                                    );
+                                                    hideTooltips();
+                                                })
                                             "
                                         >
                                             remove
@@ -270,7 +265,7 @@ onBeforeUnmount(() => {
                         autocomplete="off"
                     />
                     <button
-                        class="btn btn-light"
+                        class="btn btn-danger"
                         :disabled="!newPlaylistName.trim().length || inProgress"
                         @click="addPlaylist()"
                     >

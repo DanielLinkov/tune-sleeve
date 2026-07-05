@@ -1,3 +1,5 @@
+import { Tooltip } from "bootstrap";
+
 const htmlEscapeMap: Record<string, string> = {
     "&": "&amp;",
     "<": "&lt;",
@@ -15,4 +17,22 @@ export function formatDuration(seconds: number): string {
     const minutes = Math.floor(totalSeconds / 60);
     const remainingSeconds = totalSeconds % 60;
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+}
+
+export function hideTooltips(): void {
+    const tooltips = document.querySelectorAll(".tooltip");
+    tooltips.forEach((tooltip) => {
+        tooltip.remove();
+    });
+}
+
+export function disposeTooltips(): void {
+    document.body
+        .querySelectorAll('[data-bs-toggle="tooltip"]')
+        .forEach((el) => {
+            const tooltipInstance = Tooltip.getInstance(el);
+            if (tooltipInstance) {
+                tooltipInstance.dispose();
+            }
+        });
 }

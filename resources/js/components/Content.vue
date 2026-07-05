@@ -8,6 +8,10 @@
             v-if="uiStore.page === 'albums'"
             :list="libraryStore.albumsSortedByArtist"
         ></Albums>
+        <Albums
+            v-if="uiStore.page === 'favorite-albums'"
+            :list="libraryStore.albumsSortedByArtist.filter(album => album.is_favorite)"
+        ></Albums>
         <Artists
             v-if="
                 uiStore.page === 'artists' ||

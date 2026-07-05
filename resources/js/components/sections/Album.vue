@@ -2,7 +2,7 @@
     <div class="w-full flex flex-column h-100">
         <header class="d-flex align-items-center p-2 px-3 bg-info-subtle text-white">
             <img
-                v-if="album?.cover_path"
+                v-if="album.cover_path"
                 :src="libraryStore.coverUrl(album)"
                 class="cover"
                 :alt="album.title"
@@ -16,16 +16,22 @@
             </div>
             <div class="card-header">
                 <h5 class="card-title mb-0">
-                    {{ album?.title || "Album" }}
+                    {{ album.title || "Album" }}
                 </h5>
-                <div class="card-body">
+                <div class="">
                     <p class="card-text">
                         {{
-                            album?.is_various
+                            album.is_various
                                 ? "Various Artists"
                                 : artist?.name || "No artist available."
                         }}
                     </p>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-transparent" title="Love this" data-bs-toggle="tooltip" @click="toggleAlbumFavorite(album.id);">
+                        <i v-if="album.is_favorite" class="bi bi-heart-fill"></i>
+                        <i v-else class="bi bi-heart"></i>
+                    </button>
                 </div>
             </div>
             <div class="ms-auto">
@@ -67,13 +73,15 @@ import { useLibraryStore } from "../../stores/library";
 import { usePlayerStore } from "../../stores/player";
 import { computed } from "vue";
 import TrackList from "../TrackList.vue";
+import { useToast } from "vue-toastification";
 
 const libraryStore = useLibraryStore();
 const playerStore = usePlayerStore();
 const tracks = computed(() => libraryStore.tracksOfAlbum(props.album?.id));
 const props = defineProps<{
-    album: Album | null;
+    album: Album;
 }>();
+const toast = useToast();
 const artist = computed(() =>
     libraryStore.getArtist(props.album?.artist_id || null)
 );
@@ -83,6 +91,14 @@ const activateTrack = (trackId: number) => {
     playerStore.enqueue(tracks.value);
     const trackIndex = tracks.value.findIndex((t) => t.id === trackId);
     if (trackIndex >= 0) playerStore.playTrackId(trackId);
+};
+
+const toggleAlbumFavorite = async (albumId: number) => {
+    try {
+        const message = await libraryStore.toggleAlbumFavorite(albumId);
+    } catch (error) {
+        console.error("Error toggling album favorite status:", error);
+    }
 };
 </script>
 
