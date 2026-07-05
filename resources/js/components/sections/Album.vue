@@ -19,13 +19,15 @@
                     {{ album.title || "Album" }}
                 </h5>
                 <div class="">
-                    <p class="card-text">
+                    <button class="btn btn-transparent btn-sm"
+                        @click="!album.is_various && (uiStore.selectArtist(!album.is_various && artist?.id || null), uiStore.setPage('artist'));"
+                    >
                         {{
                             album.is_various
                                 ? "Various Artists"
                                 : artist?.name || "No artist available."
                         }}
-                    </p>
+                    </button>
                 </div>
                 <div class="mt-3">
                     <button class="btn btn-transparent" title="Love this" data-bs-toggle="tooltip" @click="toggleAlbumFavorite(album.id);">
@@ -71,12 +73,14 @@
 import { Album } from "../../types";
 import { useLibraryStore } from "../../stores/library";
 import { usePlayerStore } from "../../stores/player";
+import { useUiStore } from "../../stores/ui";
 import { computed } from "vue";
 import TrackList from "../TrackList.vue";
 import { useToast } from "vue-toastification";
 
 const libraryStore = useLibraryStore();
 const playerStore = usePlayerStore();
+const uiStore = useUiStore();
 const tracks = computed(() => libraryStore.tracksOfAlbum(props.album?.id));
 const props = defineProps<{
     album: Album;

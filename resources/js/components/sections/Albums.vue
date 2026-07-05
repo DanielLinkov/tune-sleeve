@@ -67,6 +67,7 @@
                         @click="
                             uiStore.selectAlbum(album.id);
                             uiStore.setPage('album');
+                            uiStore.selectGenre('');
                         "
                         v-for="album in listAppearsInVarious as Album[]"
                         :key="album.id"

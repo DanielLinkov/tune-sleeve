@@ -16,11 +16,14 @@
                 v-if="!playerStore.isPlaying"
                 :disabled="!playerStore.nowPlaying"
                 class="btn btn-primary"
+                title="[Space] to resume"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
                 @click="playerStore.play()"
             >
                 <i class="bi bi-play-fill"></i>
             </button>
-            <button v-else class="btn btn-primary" @click="playerStore.pause()">
+            <button title="[Space] to pause" data-bs-toggle="tooltip" data-bs-placement="bottom" v-else class="btn btn-primary" @click="playerStore.pause()">
                 <i class="bi bi-pause"></i>
             </button>
             <button
@@ -37,6 +40,7 @@
             @click="
                 uiStore.selectAlbum(album.id);
                 uiStore.setPage('album');
+                uiStore.selectArtist(null);
             "
             class="w-12 h-12 rounded ms-4 cursor-pointer cover"
         />
@@ -130,11 +134,11 @@
                     class="bi bi-volume-mute"
                 ></i>
                 <i
-                    v-else-if="playerStore.getVolume < 0.3"
+                    v-else-if="playerStore.getVolume < 0.03"
                     class="bi bi-volume-off"
                 ></i>
                 <i
-                    v-else-if="playerStore.getVolume < 0.7"
+                    v-else-if="playerStore.getVolume < 0.15"
                     class="bi bi-volume-down"
                 ></i>
                 <i v-else class="bi bi-volume-up"></i>
@@ -159,17 +163,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, watch } from "vue";
 import { useLibraryStore } from "../stores/library";
 import { usePlayerStore } from "../stores/player";
 import { useUiStore } from "../stores/ui";
-import { formatDuration } from "../utils";
+import { formatDuration, hideTooltips } from "../utils";
 
 const playerStore = usePlayerStore();
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();
 const MIN_DB = -60;
 
+// Watch isPlaying and hide the play/pause buttons tooltips on state change
+watch(
+    () => playerStore.isPlaying,
+    () => {
+        hideTooltips();
+    }
+);
 function back() {
     if (playerStore.currentTime > 3 || !playerStore.canPrev) {
         playerStore.seek(0);
