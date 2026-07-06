@@ -184,7 +184,11 @@
                                     <div class="dropdown-menu show static!">
                                         <div
                                             v-if="
-                                                libraryStore.getPlaylists
+                                                libraryStore.getPlaylists.filter((playlist) =>
+                                                    playlist.tracks.includes(
+                                                        track.id,
+                                                    ),
+                                                )
                                                     .length === 0
                                             "
                                             class="dropdown-item disabled"
