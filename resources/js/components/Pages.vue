@@ -11,7 +11,7 @@
             <li class="list-group-item list-group-item-action" :class="{'active': uiStore.page === 'search'}" @click="onSelectPage('search')"><i class="bi bi-search"></i> <div class="">Search</div></li>
         </ul>
         <footer class="p-3">
-            <small class="text-muted">TuneSleeve v0.4.0</small>
+            <small class="text-muted">TuneSleeve v0.8.0</small>
         </footer>
     </div>
 </template>

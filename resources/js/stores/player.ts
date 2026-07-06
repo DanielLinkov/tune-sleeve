@@ -39,11 +39,11 @@ export const usePlayerStore = defineStore('player', {
         this.duration = s.duration;
         this.volume = s.volume;
       });
-      this._player.setVolume(localStorage.getItem('player-volume')
-      ? Math.min(1, Math.max(0, Number(localStorage.getItem('player-volume'))))
+      this._player.setVolume(localStorage.getItem('tunesleeve:player-volume')
+      ? Math.min(1, Math.max(0, Number(localStorage.getItem('tunesleeve:player-volume'))))
       : 1);
-      this._player.setShuffle(localStorage.getItem('player-shuffle') === '1');
-      const repeatMode = localStorage.getItem('player-repeat') as 'none' | 'one' | 'all';
+      this._player.setShuffle(localStorage.getItem('tunesleeve:player-shuffle') === '1');
+      const repeatMode = localStorage.getItem('tunesleeve:player-repeat') as 'none' | 'one' | 'all';
       this._player.setRepeat(repeatMode === 'none' || repeatMode === 'one' || repeatMode === 'all' ? repeatMode : 'none');
     },
     destroy() { this._unsub?.(); this._player = null; },
@@ -68,24 +68,24 @@ export const usePlayerStore = defineStore('player', {
         const queueIds = this.queue.map(x => x.id);
         // Export only unique track IDs to localStorage
         const uniqueQueueIds = Array.from(new Set(queueIds));
-        localStorage.setItem('player-queue', JSON.stringify(uniqueQueueIds));
+        localStorage.setItem('tunesleeve:player-queue', JSON.stringify(uniqueQueueIds));
     },
     removeAt(i: number) { this._player?.removeAt(i); },
     toggleShuffle() {
       this._player?.toggleShuffle();
-      localStorage.setItem('player-shuffle', this.isShuffling ? '1' : '0');
+      localStorage.setItem('tunesleeve:player-shuffle', this.isShuffling ? '1' : '0');
     },
     setRepeat(mode: 'none' | 'one' | 'all') {
       this._player?.setRepeat(mode);
-      localStorage.setItem('player-repeat', mode);
+      localStorage.setItem('tunesleeve:player-repeat', mode);
     },
     toggleRepeat() {
       this._player?.toggleRepeat();
-      localStorage.setItem('player-repeat', this.repeatMode);
+      localStorage.setItem('tunesleeve:player-repeat', this.repeatMode);
     },
     setVolume(v: number) {
       this._player?.setVolume(v);
-      localStorage.setItem('player-volume', String(v));
+      localStorage.setItem('tunesleeve:player-volume', String(v));
     },
   },
 });

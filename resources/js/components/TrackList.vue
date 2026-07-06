@@ -1,6 +1,7 @@
 <template>
     <ul
-        class="list-group list-group-flush user-select-none mx-auto"
+        class="list-group user-select-none mx-auto"
+        data-list-root
         :class="{ 'thin-view': withArtist }"
     >
         <template v-for="(track, index) in tracks" :key="track.id">
@@ -44,7 +45,7 @@
                         v-if="withArtist"
                         :class="[
                             uiStore.selectedArtistId === track.artist_id
-                                ? 'fw-bold text-white'
+                                ? 'fw-bold'
                                 : 'text-muted',
                         ]"
                     >
@@ -329,8 +330,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.list-group {
-    max-width: 450px;
+/* Style the root element */
+[data-list-root] {
+    width: 40rem;
+    max-width: 100%;
 }
 .list-group.thin-view {
     --bs-list-group-item-padding-y: 0.15rem;

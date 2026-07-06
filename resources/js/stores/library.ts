@@ -165,7 +165,7 @@ export const useLibraryStore = defineStore("library", {
             );
             this.loaded = true;
             // Load the storted queue from localStorage
-            const playerQueue = localStorage.getItem("player-queue");
+            const playerQueue = localStorage.getItem("tunesleeve:player-queue");
             if (playerQueue) {
                 const queueIds: number[] = JSON.parse(playerQueue);
                 const uniqueQueueIds = Array.from(new Set(queueIds));
@@ -175,7 +175,7 @@ export const useLibraryStore = defineStore("library", {
                 if (queueTracks.length) {
                     const playerStore = usePlayerStore();
                     playerStore.enqueue(queueTracks);
-                    const idx = Number(localStorage.getItem("queue-index"));
+                    const idx = Number(localStorage.getItem("tunesleeve:queue-index"));
                     if (!Number.isNaN(idx) && idx >= 0 && idx < playerStore.queue.length) {
                         playerStore.play(idx);
                         playerStore.pause();

@@ -83,7 +83,7 @@ export class Player {
         if (typeof i === "number") this.load(i);
         if (this.state.index === -1 && this.state.queue.length) this.load(0);
         await this.audio.play().catch(() => void 0);
-        localStorage.setItem("queue-index", String(this.state.index));
+        localStorage.setItem("tunesleeve:queue-index", String(this.state.index));
         this.state.isPlaying = !this.audio.paused;
         this.emit();
     }

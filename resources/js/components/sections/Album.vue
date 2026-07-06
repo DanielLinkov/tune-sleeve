@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-column h-100">
-        <header class="d-flex align-items-center p-2 px-3 bg-info-subtle text-white">
+        <header class="d-flex align-items-center p-2 px-3 bg-info-subtle">
             <img
                 v-if="album.cover_path"
                 :src="libraryStore.coverUrl(album)"
@@ -10,7 +10,7 @@
             />
             <div
                 v-else
-                class="cover bg-primary d-flex align-items-center justify-content-center text-white"
+                class="cover bg-primary d-flex align-items-center justify-content-center"
             >
                 <i class="bi bi-music-note-beamed" style="font-size: 4rem"></i>
             </div>

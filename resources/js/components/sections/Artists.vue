@@ -6,6 +6,7 @@
                 type="text"
                 class="form-control form-control-sm ms-2"
                 placeholder="Search artists..."
+                autofocus
                 title="<strong>Esc</strong> to clear<br/><strong>Enter</strong> to select if only one result"
                 data-bs-toggle="tooltip"
                 @keydown.escape="artistSearchQuery = ''"

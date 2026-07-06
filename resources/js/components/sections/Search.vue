@@ -52,6 +52,7 @@ const playTrack = (track: Track) => {
                     type="text"
                     class="form-control mt-2"
                     @keydown.space.stop
+                    @keyup.escape="uiStore.setSearch('')"
                     placeholder="Search for artists, albums, or songs..."
                     v-model="uiStore.search"
                 />
@@ -66,11 +67,11 @@ const playTrack = (track: Track) => {
                         <li
                             v-for="track in foundTracks"
                             :key="track.id"
-                            class="list-group-item list-group-item-action"
+                            class="list-group-item list-group-item-action list-group-item-primary"
                         >
                             <div class="">
                                 <div class="d-flex justify-content-between">
-                                    <button class="btn px-0 text-white"
+                                    <button class="btn px-0"
                                     @click="playTrack(track)"
                                     >{{ track.title }}</button>
                                     <div class="text-muted ms-2">by <button class="btn p-0" @click="uiStore.selectArtist(track.artist_id);uiStore.setPage('artist')">{{ libraryStore.getArtist(track.artist_id)?.name || "Unknown Artist" }}</button></div>
@@ -84,7 +85,7 @@ const playTrack = (track: Track) => {
                         <li
                             v-for="artist in foundArtists"
                             :key="artist.id"
-                            class="list-group-item list-group-item-action"
+                            class="list-group-item list-group-item-action list-group-item-secondary"
                         >
                             <button class="btn p-0" @click="uiStore.selectArtist(artist.id);uiStore.setPage('artist')">{{ artist.name }}</button>
                         </li>
@@ -94,7 +95,7 @@ const playTrack = (track: Track) => {
                         <li
                             v-for="album in foundAlbums"
                             :key="album.id"
-                            class="list-group-item list-group-item-action"
+                            class="list-group-item list-group-item-action list-group-item-info"
                         >
                             <div class="">
                                 <div><button class="btn p-0" @click="uiStore.selectAlbum(album.id);uiStore.setPage('album')">{{ album.title?.substring(0, 60) || "Unknown Album" }}</button></div>

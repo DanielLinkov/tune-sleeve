@@ -28,6 +28,7 @@ const genres = computed(() =>
                 type="text"
                 class="form-control form-control-sm ms-2"
                 placeholder="Search genres... [Enter to select, Esc to clear]"
+                autofocus
                 v-on:keydown.escape="genreSearchQuery = ''"
                 v-on:keydown.enter="
                     if (listFiltered.length === 1) {

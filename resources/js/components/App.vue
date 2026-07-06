@@ -3,6 +3,10 @@
         <Header></Header>
         <Content></Content>
         <Splash v-if="isSplashVisible"></Splash>
+        <OffCanvas :theme="theme"
+            @settings-theme="changeTheme"
+            @settings-theme_variant="changeThemeVariant"
+        ></OffCanvas>
     </div>
 </template>
 
@@ -10,7 +14,8 @@
 import Header from './Header.vue';
 import Content from './Content.vue';
 import Splash from './Splash.vue';
-import { onMounted, onUnmounted, provide, ref } from 'vue';
+import OffCanvas from './OffCanvas.vue';
+import { onMounted, ref } from 'vue';
 import { useLibraryStore } from '../stores/library';
 import { usePlayerStore } from '../stores/player';
 import { useUiStore } from '../stores/ui';
@@ -21,6 +26,22 @@ const lib = useLibraryStore();
 const player = usePlayerStore();
 const ui = useUiStore();
 
+const changeTheme = (newTheme: string) => {
+    localStorage.setItem('tunesleeve:theme', newTheme);
+    const link = document.querySelector('link[data-id="theme"]') as HTMLLinkElement;
+    if (link) {
+        link.href = `/themes/${newTheme}.min.css`;
+    }
+};
+const theme = localStorage.getItem('tunesleeve:theme') || 'default';
+changeTheme(theme);
+const changeThemeVariant = (newVariant: string) => {
+    localStorage.setItem('tunesleeve:theme_variant', newVariant);
+    document.body.setAttribute('data-bs-theme', newVariant);
+};
+const themeVariant = localStorage.getItem('tunesleeve:theme_variant') || 'light';
+changeThemeVariant(themeVariant);
+
 onMounted(async () => {
     player.init();
     await lib.load();
@@ -30,6 +51,5 @@ onMounted(async () => {
 });
 window.addEventListener('beforeunload', () => {
     player.destroy();
-    console.debug('Player destroyed');
 });
 </script>

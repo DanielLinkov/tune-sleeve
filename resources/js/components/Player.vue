@@ -98,7 +98,7 @@
                 :class="[
                     playerStore.repeatMode === 'none'
                         ? 'text-muted'
-                        : 'text-white',
+                        : 'text-body',
                 ]"
                 @click="playerStore.toggleRepeat"
                 title="Repeat (none / all / one)"
@@ -113,7 +113,7 @@
             </button>
             <button
                 class="btn btn-sm"
-                :class="[playerStore.isShuffling ? 'text-white' : 'text-muted']"
+                :class="[playerStore.isShuffling ? 'text-body' : 'text-muted']"
                 @click="playerStore.toggleShuffle"
                 title="Shuffle"
                 data-bs-toggle="tooltip"
@@ -144,7 +144,7 @@
                 <i v-else class="bi bi-volume-up"></i>
             </button>
             <ul class="dropdown-menu p-3" style="width: 200px">
-                <label class="form-label"
+                <label class="dropdown-header"
                     >Volume:
                     {{ volumeDbLabel }}</label
                 >
