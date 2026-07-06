@@ -229,7 +229,7 @@ import { Track } from "../types";
 import { usePlayerStore } from "../stores/player";
 import { useLibraryStore } from "../stores/library";
 import { useUiStore } from "../stores/ui";
-import { onMounted, computed, ref } from "vue";
+import { onMounted, computed, ref, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { formatDuration } from "../utils";
 
@@ -243,7 +243,7 @@ const removeFromPlaylist = async (trackId: number, playlistId: number) => {
             playlistId,
         );
         toast.success(message || "Track removed from playlist");
-    } catch (error) {
+    } catch (error: any) {
         toast.error(error.message || "Failed to remove track from playlist");
     }
 };
@@ -278,19 +278,31 @@ const playerStore = usePlayerStore();
 const libraryStore = useLibraryStore();
 const uiStore = useUiStore();
 const props = defineProps<{
-    tracks: Track[];
-    withArtist?: boolean;
-    noDiskLabels?: boolean;
+    tracks: Track[];     // The track list to display
+    withArtist?: boolean;   // Whether to display the artist name alongside the track title
+    noDiskLabels?: boolean; // Whether to hide disk labels in the track list
 }>();
 
-const hasMultipleDisks = computed(() => {
+const hasMultipleDisks = computed(() => {   // The hasMultipleDisks computed property checks if there are multiple unique disk numbers in the tracks array. It creates a Set of disk numbers from the tracks and checks if the size of the Set is greater than 1, indicating that there are multiple disks present.
     return new Set(props.tracks.map((t) => t.disk_no)).size > 1;
 });
-const diskNoChanged = (index: number) => {
+const diskNoChanged = (index: number) => {  // The diskNoChanged function checks if the disk number has changed compared to the previous track. If it's the first track (index 0), it checks if the disk number is not null. For subsequent tracks, it compares the current track's disk number with the previous track's disk number to determine if a new disk label should be displayed.
     if (index === 0) return props.tracks[0].disk_no !== null;
     return props.tracks[index].disk_no !== props.tracks[index - 1].disk_no;
 };
 
+// Watch for nowPlaying id change and scroll that one into view
+watch(
+    () => playerStore.nowPlaying?.id,
+    (newId) => {
+        if (newId) {
+            const el = document.querySelector(`[data-track-id='${newId}']`);
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+    },
+);
 onMounted(() => {
     if (playerStore.nowPlaying) {
         const el = document.querySelector(
@@ -298,6 +310,19 @@ onMounted(() => {
         );
         if (el) {
             el.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+            // The list is not showing the playing track, so scroll to the selected artist if any and if this is a various artist album, otherwise scroll to the top of the list
+            if (uiStore.selectedArtistId && props.withArtist) {
+                const artistTrack = props.tracks.find(
+                    (t) => t.artist_id === uiStore.selectedArtistId,
+                );
+                if (artistTrack) {
+                    const artistEl = document.querySelector(`[data-track-id='${artistTrack.id}']`);
+                    if (artistEl) {
+                        artistEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                }
+            }
         }
     }
 });

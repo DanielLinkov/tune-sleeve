@@ -232,8 +232,9 @@ export const useLibraryStore = defineStore("library", {
             if (!playlist) throw new Error("Playlist not found");
 
             const newTrackList = playlist.tracks.filter((id) => id !== trackId);
-            await savePlaylistTracks(playlist.id, newTrackList);
+            const message = await savePlaylistTracks(playlist.id, newTrackList);
             playlist.tracks = newTrackList;
+            return message;
         },
         async toggleAlbumFavorite(albumId: number) {
             const album = this.albums.find((a) => a.id === albumId);
