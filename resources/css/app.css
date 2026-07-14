@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+/* @import 'tailwindcss'; */
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 @import 'vue-toastification/dist/index.css';
 @import 'floating-vue/dist/style.css';
@@ -10,4 +10,69 @@
 .v-popper--theme-bs-dropdown .v-popper__arrow-container,
 .v-popper--theme-bs-menu .v-popper__arrow-container {
     display: none;
+}
+
+/* Tailwind replacements */
+@layer utilities{
+    .z-10{
+        z-index: 10;
+    }
+    .h-9{
+        height: 2.25rem;
+    }
+    .h-12{
+        height: 3rem;
+    }
+    .w-6{
+        width: 1.5rem;
+    }
+    .w-12{
+        width: 3rem;
+    }
+    .w-70{
+        width: 17.5rem;
+    }
+    .w-80{
+        width: 20rem;
+    }
+    .w-120{
+        width: 30rem;
+    }
+    .w-140{
+        width: 35rem;
+    }
+    .w-sm{
+        width: 24rem;
+    }
+    .w-min{
+        width: min-content;
+    }
+    .-mr-4{
+        margin-right: -1rem;
+    }
+    .truncate{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .cursor-pointer{
+        cursor: pointer;
+    }
+    .cursor-default{
+        cursor: default;
+    }
+    .hover\:outline{
+        &:hover{
+            outline: 1px solid;
+        }
+    }
+    .text-base{
+        font-size: 1rem;
+    }
+    .text-sm{
+        font-size: 0.875rem;
+    }
+    .text-xs{
+        font-size: 0.75rem;
+    }
 }

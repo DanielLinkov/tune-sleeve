@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex flex-column h-100">
+    <div class="w-100 d-flex flex-column h-100">
         <header class="d-flex align-items-center p-2 px-3 bg-info-subtle">
             <img
                 v-if="album.cover_path"

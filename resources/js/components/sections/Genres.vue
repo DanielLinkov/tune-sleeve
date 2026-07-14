@@ -22,7 +22,7 @@ const genres = computed(() =>
 
 <template>
     <div class="card bg-info-subtle w-sm">
-        <div class="card-header flex items-center gap-2">
+        <div class="card-header d-flex align-items-center gap-2">
             <i class="bi bi-music-note-list"></i>
             <input
                 type="text"

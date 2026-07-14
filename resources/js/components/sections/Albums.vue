@@ -1,12 +1,14 @@
 <template>
     <div class="card bg-info-subtle flex-grow-1 position-relative">
         <Artists :list="uiStore.selectedGenre ? libraryStore.artistsOfGenre(uiStore.selectedGenre) : libraryStore.artists"
-            class="position-absolute top-0 right-full w-70! h-full! z-10 shadow"
+            class="position-absolute top-0 end-100 w-70 h-100 z-10 shadow"
             v-if="uiStore.page === 'genre' || uiStore.page === 'genre-artist'"
         ></Artists>
         <div class="card-header">
-            <i class="bi bi-disc"></i>
-            {{ title }} ({{ list.length }})
+            <div class="card-title text-body fs-5 fw-bold">
+                <i class="bi bi-disc"></i>
+                {{ title }} ({{ list.length }})
+            </div>
         </div>
         <div class="card-body overflow-y-auto scrollbar-thin">
             <div v-if="list.length === 0" class="text-center text-muted my-4">
@@ -32,7 +34,7 @@
                     />
                     <div
                         v-else
-                        class="cover bg-primary d-flex align-items-center justify-content-center text-white"
+                        class="cover bg-primary d-flex align-items-center justify-content-center"
                     >
                         <i
                             class="bi bi-music-note-beamed"
@@ -49,7 +51,7 @@
                             'Unknown Artist'
                         }</div>`"
                     >
-                        <h6 class="text-title truncate">
+                        <h6 class="text-title truncate text-body">
                             {{ album.title }}
                         </h6>
                         <p class="card-text truncate text-muted text-sm">
@@ -81,7 +83,7 @@
                         />
                         <div
                             v-else
-                            class="cover bg-primary d-flex align-items-center justify-content-center text-white"
+                            class="cover bg-primary d-flex align-items-center justify-content-center"
                         >
                             <i
                                 class="bi bi-music-note-beamed"

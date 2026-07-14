@@ -4,6 +4,7 @@
         <Content></Content>
         <Splash v-if="isSplashVisible"></Splash>
         <OffCanvas :theme="theme"
+            :themeVariant="themeVariant"
             @settings-theme="changeTheme"
             @settings-theme_variant="changeThemeVariant"
         ></OffCanvas>
@@ -36,10 +37,10 @@ const changeTheme = (newTheme: string) => {
 const theme = localStorage.getItem('tunesleeve:theme') || 'default';
 changeTheme(theme);
 const changeThemeVariant = (newVariant: string) => {
-    localStorage.setItem('tunesleeve:theme_variant', newVariant);
+    localStorage.setItem('tunesleeve:theme-variant', newVariant);
     document.body.setAttribute('data-bs-theme', newVariant);
 };
-const themeVariant = localStorage.getItem('tunesleeve:theme_variant') || 'light';
+const themeVariant = localStorage.getItem('tunesleeve:theme-variant') || 'light';
 changeThemeVariant(themeVariant);
 
 onMounted(async () => {

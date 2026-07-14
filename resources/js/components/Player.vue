@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center">
+    <div class="d-flex align-items-center">
         <div class="btn-group">
             <button
                 class="btn btn-primary"
@@ -46,13 +46,13 @@
         />
         <div
             v-else
-            class="w-12 h-12 rounded dark:bg-gray-600 ms-4 flex items-center justify-center cursor-pointer"
+            class="w-12 h-12 rounded ms-4 d-flex align-items-center justify-content-center cursor-pointer"
             @click="uiStore.selectAlbum(album?.id ?? null)"
         >
             <i class="bi bi-music-note-beamed fs-5"></i>
         </div>
         <div
-            class="flex flex-col ms-3 title cursor-default"
+            class="d-flex flex-column ms-3 title cursor-default"
             :data-bs-original-title="
                 track
                     ? `<b>${track.title}</b>${
@@ -63,7 +63,7 @@
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
         >
-            <span class="font-bold truncate" v-if="track">{{
+            <span class="fw-bold truncate" v-if="track">{{
                 track.title
             }}</span>
             <span
@@ -77,10 +77,10 @@
                 >{{ artist.name }}</span
             >
         </div>
-        <div class="seek-bar flex-grow ms-4">
+        <div class="seek-bar flex-grow-1 ms-4">
             <input
                 type="range"
-                class="form-range w-full"
+                class="form-range w-100"
                 min="0"
                 :max="playerStore.duration"
                 step="1"

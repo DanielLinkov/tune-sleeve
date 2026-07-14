@@ -1,6 +1,6 @@
 <template>
-    <div class="card bg-info-subtle w-80">
-        <div class="card-header flex items-center gap-2" v-if="!inGenreMode">
+    <div class="card bg-info-subtle">
+        <div class="card-header d-flex align-items-center gap-2" v-if="!inGenreMode">
             <i class="bi bi-person-lines-fill"></i>
             <input
                 type="text"

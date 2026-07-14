@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex justify-content-center align-items-center vw-100 vh-100 position-fixed z-10 bg-gray-700">
+    <div class="d-flex justify-content-center align-items-center vw-100 vh-100 position-fixed z-10 bg-primary-subtle">
         <div class="card" style="width: 28rem">
             <img src="../../../public/images/splash.jpg" class="card-img-top" alt="splash" />
             <div class="card-body">

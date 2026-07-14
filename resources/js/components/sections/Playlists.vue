@@ -85,8 +85,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="w-full">
-        <div class="playlists w-120 mx-auto mt-4">
+    <div class="w-100">
+        <div class="playlists w-120 mx-auto mt-5">
             <h2>Playlists</h2>
             <div class="my-3 list-group">
                 <div
@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
                         :id="'playlist-' + playlist.id"
                     >
                         <div
-                            class="flex justify-content-between align-items-center p-3"
+                            class="d-flex justify-content-between align-items-center p-3"
                         >
                             <p
                                 class="text-muted py-1 mb-0 text-sm"
@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
                                 <Slidable :max-offset="75">
                                     <template #action>
                                         <button
-                                            class="btn-danger btn rounded-none"
+                                            class="btn-danger btn rounded-0"
                                             title="Remove from playlist"
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="left"
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
             </div>
-            <div class="flex justify-content-end mt-2">
+            <div class="d-flex justify-content-end mt-2">
                 <button
                     v-if="!inAddingMode"
                     class="btn btn-outline-primary"

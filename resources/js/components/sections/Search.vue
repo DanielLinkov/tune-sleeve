@@ -44,8 +44,8 @@ const playTrack = (track: Track) => {
 </script>
 
 <template>
-    <div class="w-full">
-        <div class="card w-140 mx-auto mt-10">
+    <div class="w-100">
+        <div class="card w-140 mx-auto mt-5">
             <div class="card-body">
                 <i class="bi bi-search"></i> Search
                 <input

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex-grow-1 overflow-auto flex">
+    <div class="flex-grow-1 overflow-auto d-flex">
         <Pages></Pages>
         <Genres
             v-if="uiStore.page === 'genres' || uiStore.selectedGenre"
@@ -13,6 +13,7 @@
             :list="libraryStore.albumsSortedByArtist.filter(album => album.is_favorite)"
         ></Albums>
         <Artists
+            class="w-80"
             v-if="
                 uiStore.page === 'artists' ||
                 uiStore.page === 'artist' ||
@@ -41,6 +42,7 @@
         <Queue v-if="uiStore.page === 'queue'"></Queue>
         <Albums
             v-if="uiStore.page === 'collections'"
+            title="Collections"
             :list="libraryStore.collections"
         ></Albums>
         <Search v-if="uiStore.page === 'search'"></Search>

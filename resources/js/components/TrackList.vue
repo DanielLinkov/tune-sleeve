@@ -67,7 +67,7 @@
                         <i class="bi bi-three-dots-vertical"></i>
                     </button>
                     <template #popper>
-                        <div class="dropdown-menu show static!">
+                        <div class="dropdown-menu show position-static">
                             <button
                                 class="dropdown-item"
                                 @click="
@@ -94,15 +94,15 @@
                             <div class="dropdown-header">Playlist Options</div>
                             <VDropdown theme="bs-menu">
                                 <button
-                                    class="dropdown-item d-flex justify-content-between relative"
+                                    class="dropdown-item d-flex justify-content-between position-relative"
                                 >
                                     <i
-                                        class="bi bi-chevron-compact-left absolute right-full -mr-4"
+                                        class="bi bi-chevron-compact-left position-absolute end-100 -mr-4"
                                     ></i>
                                     Add to Existing
                                 </button>
                                 <template #popper>
-                                    <div class="dropdown-menu show static!">
+                                    <div class="dropdown-menu show position-static">
                                         <div
                                             v-if="
                                                 libraryStore.getPlaylists
@@ -138,13 +138,13 @@
                                     class="dropdown-item d-flex justify-content-between"
                                 >
                                     <i
-                                        class="bi bi-chevron-compact-left absolute right-full -mr-4"
+                                        class="bi bi-chevron-compact-left position-absolute end-100 -mr-4"
                                     ></i>
                                     Add to New
                                 </button>
 
                                 <template #popper="{ hide }">
-                                    <div class="dropdown-menu show static!">
+                                    <div class="dropdown-menu show position-static">
                                         <div class="dropdown-header">
                                             Enter Playlist Name
                                         </div>
@@ -174,15 +174,15 @@
                             </VDropdown>
                             <VDropdown theme="bs-menu">
                                 <button
-                                    class="dropdown-item d-flex justify-content-between relative"
+                                    class="dropdown-item d-flex justify-content-between position-relative"
                                 >
                                     <i
-                                        class="bi bi-chevron-compact-left absolute right-full -mr-4"
+                                        class="bi bi-chevron-compact-left position-absolute end-100 -mr-4"
                                     ></i>
                                     Remove from
                                 </button>
                                 <template #popper>
-                                    <div class="dropdown-menu show static!">
+                                    <div class="dropdown-menu show position-static">
                                         <div
                                             v-if="
                                                 libraryStore.getPlaylists.filter((playlist) =>
